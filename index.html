@@ -15,50 +15,51 @@
       color: #2E6F95;
     }
     .hire-highlight {
-      color: #C45C26;
       font-weight: bold;
     }
     .tldr-highlight {
-      color: #2E6F95;
       font-weight: bold;
-      text-decoration: underline;
     }
     .tldr-acronym {
       color: #2E6F95;
       font-weight: bold;
     }
     .section-title {
-      color: #2E6F95;
-      border-bottom: 3px solid #2E6F95;
-      padding-bottom: 10px;
-      margin-bottom: 30px;
+      color: #222;
+      margin-bottom: 25px;
     }
     .subsection-title {
-      color: #333;
-      border-bottom: 2px solid #8CB9D0;
-      padding-bottom: 8px;
+      color: #444;
       margin-bottom: 20px;
       margin-top: 40px;
     }
     .custom-blue-box {
-      border: 3px solid #8CB9D0;
-      padding: 3%;
-      background-color: #8CB9D020;
+      padding: 30px 35px;
+      background-color: #f7f9fa;
       border-radius: 10px;
       margin: 2% 0;
     }
-    .placeholder-media {
+    .paper-figure {
       width: 100%;
-      min-height: 280px;
-      border: 2px dashed #ccc;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #888;
-      background-color: #fafafa;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+    .figure-caption {
+      font-size: 0.85rem;
+      color: #666;
       text-align: center;
-      padding: 20px;
+      margin-top: 10px;
+      padding: 0 5%;
+    }
+    .figure-block {
+      margin: 25px 0;
+    }
+    code {
+      color: inherit;
+      background-color: transparent;
+      padding: 0;
+      font-size: 0.95em;
     }
   </style>
 </head>
@@ -75,10 +76,6 @@
             <span class="hire-accent">HiRE</span>: Hindsight Reward Editing<br>
             <span style="font-size: 0.75em;">for Policy Finetuning</span>
           </h1>
-
-          <div class="is-size-5" style="margin-bottom: 15px; color: #000; font-weight: 600;">
-            CoRL 2026
-          </div>
 
           <div class="is-size-4" style="margin-bottom: 15px; color: #555;">
             Anonymous Author(s)
@@ -107,19 +104,11 @@
   </div>
 </section>
 
-<!-- Teaser + TL;DR -->
+<!-- TL;DR -->
 <section class="hero teaser" style="padding-top: 0;">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <div class="placeholder-media">
-        placeholder
-      </div>
-    </div>
-  </div>
-
-  <div class="container is-max-desktop has-text-centered">
+  <div class="container is-max-desktop has-text-centered" style="margin-top: 30px;">
     <div class="custom-blue-box">
-      <h2 class="title is-2 hire-accent">TL;DR</h2>
+      <h2 class="title is-4" style="color: #222;">TL;DR</h2>
       <div class="content has-text-justified">
         <p class="is-size-6">
           We introduce <span class="tldr-acronym">HiRE</span> (<span class="tldr-highlight">Hi</span>ndsight <span class="tldr-highlight">R</span>eward <span class="tldr-highlight">E</span>diting), a <span class="hire-highlight">training-free</span> framework that breaks the reward bottleneck in RL policy finetuning.
@@ -139,15 +128,44 @@
 
     <div class="content has-text-justified">
       <p>
-        HiRE estimates a control-aware potential in foundation representation space via non-parametric kernel density estimation,
-        contrasting success and failure buffers collected during online finetuning.
-        The edited reward is integrated with sparse task success signals through potential-based reward shaping,
-        providing dense guidance while preserving the optimal policy for task completion.
+        Following maximum-entropy inverse RL, the ideal control-aware reward is the
+        <strong>log-density ratio between success and failure states</strong>:
       </p>
-    </div>
-
-    <div class="placeholder-media">
-      Method overview figure placeholder
+      <p>
+        \[ R^*(s) = \log p_{+}(s) - \log p_{-}(s) \]
+      </p>
+      <p>
+        Instead of training a discriminator, HiRE estimates both densities <em>non-parametrically</em>
+        in a frozen foundation representation space (e.g. DINOv2, SigLIP), using von Mises&ndash;Fisher kernel
+        density estimation over a <strong>positive buffer</strong> \(\mathcal{B}^+\) (successful rollouts and expert frames)
+        and a <strong>negative buffer</strong> \(\mathcal{B}^-\) (terminal frames of failed rollouts) collected during finetuning.
+        This yields a closed-form, training-free potential:
+      </p>
+      <p>
+        \[ \Phi_{\text{HiRE}}(s) = \mathbb{L}^{\kappa^+}_{\mathcal{B}^+}\!\left(\text{sim}_\phi(s, g^+)\right)
+        \;-\; \lambda \cdot \mathbb{L}^{\kappa^-}_{\mathcal{B}^-}\!\left(\text{sim}_\phi(s, g^-)\right),
+        \qquad \mathbb{L}^{\kappa}_{\mathcal{B}}(X) := \tfrac{1}{\kappa}\log \mathbb{E}_{\mathcal{B}}\left[e^{\kappa X}\right] \]
+      </p>
+      <p>
+        where \(\text{sim}_\phi\) is cosine similarity in the representation space and
+        \(\lambda = \kappa^-/\kappa^+ \in [0,1)\) balances the two manifolds.
+        This subtractive structure partitions the representation space into three regimes.
+        In the <strong>success-dominated regime</strong>, HiRE elevates dynamically correct states that appear
+        visually distant from the goal, rescuing false negatives.
+        In the <strong>failure-dominated regime</strong>, it imposes a severe penalty on deceptive trap states
+        that look like the goal but have suffered irreversible failures, suppressing visual reward hacking.
+        In the <strong>equilibrium regime</strong>, the two gradients cancel and the landscape flattens,
+        so HiRE gracefully degrades to the clean sparse-reward recipe on under-covered states.
+        The potential is integrated with the sparse task success signal via
+        <strong>potential-based reward shaping</strong>:
+      </p>
+      <p>
+        \[ R_{\text{HiRE}}(s,a,s') = R_{\text{sparse}}(s,a,s') + w\left(\gamma\,\Phi_{\text{HiRE}}(s') - \Phi_{\text{HiRE}}(s)\right) \]
+      </p>
+      <p>
+        which provides dense guidance while provably preserving the optimal policy for task completion.
+        The whole recipe requires no reward-model training or human labels, and is compatible with any RL finetuning backbone.
+      </p>
     </div>
   </div>
 </section>
@@ -157,18 +175,34 @@
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered section-title">Simulation Results</h2>
 
-    <h3 class="title is-4 has-text-centered subsection-title">Comparative Results</h3>
-
     <div class="content has-text-justified">
       <p>
-        We evaluate HiRE on RoboMimic and MimicGen benchmarks (Tool Hang, Threading, Stack Three, Three Piece Assembly),
-        using DICE-RL as the policy finetuning backbone with DINOv2 / SigLIP encoders.
-        HiRE is compared against sparse reward and RoboMeter under the same finetuning setup.
+        We evaluate HiRE on four RoboMimic and MimicGen tasks
+        (<code>Stack_Three</code>, <code>Threading</code>, <code>Tool_Hang</code>, <code>Three_Piece_Assembly</code>),
+        comparing against sparse reward and RoboMeter under the same DICE-RL finetuning backbone.
+        The base policies exhibit non-zero but limited competence (1&ndash;18% success),
+        an intentionally challenging setting that tests whether each reward signal can guide
+        finetuning beyond the initial policy.
+      </p>
+      <p>
+        HiRE improves online finetuning in two complementary regimes.
+        On long-horizon, multi-stage tasks where sparse rewards provide limited credit assignment,
+        it lifts the final success rate substantially: roughly 50% vs. low-30% on <code>Stack_Three</code>,
+        and 75&ndash;80% vs. 60% on <code>Three_Piece_Assembly</code>.
+        On contact-rich, high-precision tasks, sparse-reward finetuning remains near zero on <code>Tool_Hang</code>
+        while HiRE steadily improves to around 60%, and on <code>Threading</code> HiRE reaches the same final
+        success with markedly fewer online interactions.
+        In contrast, the general-purpose reward model RoboMeter stays close to zero or improves only marginally,
+        suggesting its reward signals do not generalize well to these unseen scenarios.
       </p>
     </div>
 
-    <div class="placeholder-media">
-      Main results learning curves (Fig. 1) placeholder
+    <div class="figure-block">
+      <img src="images/combined_4tasks.png" alt="Comparisons on RoboMimic and MimicGen tasks" class="paper-figure">
+      <p class="figure-caption">
+        <strong>Comparisons on RoboMimic and MimicGen tasks.</strong>
+        Success rate versus online environment steps, averaged over 3 seeds.
+      </p>
     </div>
   </div>
 </section>
@@ -181,23 +215,41 @@
     <h3 class="title is-4 has-text-centered subsection-title">Reward Landscape</h3>
     <div class="content has-text-justified">
       <p>
-        HiRE corrects false negatives and false positives from raw foundation-representation similarity,
-        staying faithful to task progress along representative trajectories.
+        We compare the raw DINO goal-similarity potential against the HiRE potential along representative trajectories.
+        When the robot correctly approaches the target early in execution, the observation is visually distinct
+        from the goal frame, so the raw potential severely degrades (a <em>false negative</em>).
+        Conversely, when the robot loses the target and leaves the camera view, the raw potential deceptively
+        increases, falsely interpreting the empty background as a closer match to the goal (a <em>false positive</em>).
+        By attracting toward the success manifold and repelling from the failure manifold,
+        HiRE unmasks these visual illusions and stays faithful to true task progress.
       </p>
     </div>
-    <div class="placeholder-media">
-      Reward visualization (Fig. 2) placeholder
+    <div class="figure-block">
+      <img src="images/segment_focused_viz.png" alt="HiRE reward captures task progress beyond goal-frame visual similarity" class="paper-figure">
+      <p class="figure-caption">
+        <strong>HiRE reward captures task progress beyond goal-frame visual similarity.</strong>
+        Reward scores along representative trajectories; shaded regions mark key behavioral phases.
+      </p>
     </div>
 
     <h3 class="title is-4 has-text-centered subsection-title">Buffer Dynamics</h3>
     <div class="content has-text-justified">
       <p>
-        Positive and negative buffers co-adapt during finetuning, capturing stage-progressive failure modes
-        while keeping the success manifold concentrated.
+        Analyzing the joint t-SNE embedding of buffer samples across training reveals two insights.
+        First, the negative buffer dynamically captures stage-progressive failure modes:
+        early on it concentrates around the initial state, and as the policy improves it purges these trivial
+        failures and segments into localized clusters of hard, late-stage failures near the goal,
+        avoiding global over-penalization.
+        Second, the positive distribution remains highly concentrated while the negative one is wide and scattered,
+        empirically supporting the asymmetric concentration \(\kappa^+ > \kappa^-\) used in HiRE.
       </p>
     </div>
-    <div class="placeholder-media">
-      Buffer t-SNE visualization (Fig. 3) placeholder
+    <div class="figure-block">
+      <img src="images/selected_steps_combined.png" alt="Buffer samples in shared t-SNE space across training steps" class="paper-figure">
+      <p class="figure-caption">
+        <strong>Negative-buffer structure captures distinct failure states during reward learning.</strong>
+        Positive and negative buffer samples in a shared t-SNE space across training steps.
+      </p>
     </div>
   </div>
 </section>
@@ -209,13 +261,31 @@
 
     <div class="content has-text-justified">
       <p>
-        We evaluate HiRE on real-world manipulation tasks with a YAM robot arm,
-        comparing against sparse reward and RoboMeter under the same DICE-RL finetuning pipeline.
+        We evaluate HiRE on a 6-DoF YAM arm on a pick-and-place task: localize a bottle, grasp it reliably,
+        transport it to a target plate, and release it accurately.
+        The deformable bottle and paper plate demand compliant, coarse-to-fine control,
+        and policies are evaluated across six initial bottle positions spanning a wide tabletop workspace.
+        Starting from a diffusion policy trained on 117 teleoperated demonstrations and finetuned with DICE-RL,
+        HiRE steadily boosts the success rate from <strong>20% to 66.7%</strong> within 70 online episodes,
+        whereas the sparse-reward baseline fails entirely.
+        The sparse critic loss collapses prematurely for lack of feedback,
+        while HiRE sustains non-trivial critic updates throughout finetuning.
       </p>
     </div>
 
-    <div class="placeholder-media">
-      Real-robot results placeholder
+    <div class="figure-block">
+      <img src="images/panel_curve_combined.png" alt="Real-robot evaluation on the pick-and-place task" class="paper-figure">
+      <p class="figure-caption">
+        <strong>Real-robot evaluation on the pick-and-place task.</strong>
+        Left: a typical failure (top) vs. HiRE (bottom). Right: success rate vs. online finetuning episodes.
+      </p>
+    </div>
+
+    <div class="figure-block">
+      <img src="images/row_concat_cropped.png" alt="Six fixed initial bottle positions used for real-robot evaluation" class="paper-figure">
+      <p class="figure-caption">
+        <strong>Six fixed initial bottle positions (P1&ndash;P6) used for evaluation</strong>, spanning a wide tabletop workspace.
+      </p>
     </div>
   </div>
 </section>
@@ -227,19 +297,59 @@
 
     <div class="content has-text-justified">
       <p>
-        Ablations study foundation representation choice, reward composition (PBRS vs. raw similarity),
-        and buffer design (full HiRE vs. positive-buffer-only).
+        We ablate three design choices of HiRE:
+        the <strong>foundation representation</strong>, swapping the encoder to test representation-agnosticity;
+        the <strong>reward composition</strong>, removing either the PBRS integration or the hindsight editing to isolate each mechanism;
+        and the <strong>buffer design</strong>, disabling the negative buffer to measure how much the
+        failure-dominated correction contributes on top of the success-dominated attraction.
+      </p>
+      <p>
+        <strong>Foundation representation and reward composition.</strong>
+        Replacing DINOv2 with SigLIP leaves the rest of the reward pipeline unchanged, and both encoders
+        scaffold HiRE to improve policies, with DINOv2 performing slightly better.
+        For reward composition, the full HiRE reward achieves the highest success rate.
+        Removing PBRS (adding the potential directly to the sparse reward) lowers the final performance,
+        indicating that the temporal-difference shaping helps stabilize optimization.
+        The raw goal-similarity baseline lags far behind both variants:
+        even without the policy-invariance guarantee of PBRS, the edited potential still provides
+        a substantially more informative learning signal than raw visual similarity.
       </p>
     </div>
 
-    <div class="placeholder-media">
-      Ablation results placeholder
+    <div class="figure-block">
+      <img src="images/ablation_stack_three.png" alt="Representation and reward-composition ablations on Stack Three" class="paper-figure" style="max-width: 80%;">
+      <p class="figure-caption">
+        <strong>Representation and reward-composition ablations on <code>Stack_Three</code>.</strong>
+        (a) DINOv2 vs. SigLIP encoders. (b) Full HiRE vs. without PBRS vs. raw similarity.
+      </p>
+    </div>
+
+    <div class="content has-text-justified">
+      <p>
+        <strong>Buffer design.</strong>
+        The positive-buffer-only variant remains competitive, confirming that success-manifold attraction
+        is the main source of dense guidance. However, the full contrastive reward is stronger overall,
+        with the clearest gain on <code>Tool_Hang</code>: this contact-rich, high-precision task produces many
+        near-goal failures that appear visually successful, exactly the false-positive traps that attraction
+        alone cannot distinguish but repulsion from the negative buffer can suppress.
+        On the easier <code>Stack_Three</code>, the two variants are close,
+        suggesting that the value of the negative buffer grows with task difficulty
+        and the prevalence of visually deceptive failures.
+      </p>
+    </div>
+
+    <div class="figure-block">
+      <img src="images/ablation_buffer.png" alt="Buffer-design ablations on Stack Three and Tool Hang" class="paper-figure" style="max-width: 80%;">
+      <p class="figure-caption">
+        <strong>Buffer-design ablations on <code>Stack_Three</code> and <code>Tool_Hang</code>.</strong>
+        Full HiRE vs. positive-buffer-only.
+      </p>
     </div>
   </div>
 </section>
 
 <!-- Citation -->
-<section class="section" style="padding-bottom: 0;">
+<!-- <section class="section" style="padding-bottom: 0;">
   <div class="container is-max-desktop">
     <div style="background-color: #f5f5f5; border-radius: 10px; padding: 30px; border-left: 4px solid #2E6F95;">
       <h2 class="title is-4 has-text-centered hire-accent" style="margin-bottom: 20px;">Citation</h2>
@@ -251,13 +361,13 @@
 }</code></pre>
     </div>
   </div>
-</section>
+</section> -->
 
 <!-- Contact -->
 <section class="section">
   <div class="container is-max-desktop">
     <div class="has-text-centered" style="padding: 20px;">
-      <h2 class="title is-5 hire-accent" style="margin-bottom: 10px;">Contact</h2>
+      <h2 class="title is-5" style="color: #222; margin-bottom: 10px;">Contact</h2>
       <p style="color: #555; font-size: 0.95rem;">
         Questions? Please contact us at <a href="mailto:email@example.com" class="hire-accent">email@example.com</a>.
       </p>
