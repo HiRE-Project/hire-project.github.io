@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HiRE: Hindsight Reward Editing for Policy Finetuning</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito" type="text/css">
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    .hire-accent {
+      color: #2E6F95;
+    }
+    .hire-highlight {
+      color: #C45C26;
+      font-weight: bold;
+    }
+    .tldr-highlight {
+      color: #2E6F95;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+    .tldr-acronym {
+      color: #2E6F95;
+      font-weight: bold;
+    }
+    .section-title {
+      color: #2E6F95;
+      border-bottom: 3px solid #2E6F95;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+    .subsection-title {
+      color: #333;
+      border-bottom: 2px solid #8CB9D0;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      margin-top: 40px;
+    }
+    .custom-blue-box {
+      border: 3px solid #8CB9D0;
+      padding: 3%;
+      background-color: #8CB9D020;
+      border-radius: 10px;
+      margin: 2% 0;
+    }
+    .placeholder-media {
+      width: 100%;
+      min-height: 280px;
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      background-color: #fafafa;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-body" style="padding-bottom: 0;">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-2 publication-title">
+            <span class="hire-accent">HiRE</span>: Hindsight Reward Editing<br>
+            <span style="font-size: 0.75em;">for Policy Finetuning</span>
+          </h1>
+
+          <div class="is-size-5" style="margin-bottom: 15px; color: #000; font-weight: 600;">
+            CoRL 2026
+          </div>
+
+          <div class="is-size-4" style="margin-bottom: 15px; color: #555;">
+            Anonymous Author(s)
+          </div>
+          <div class="is-size-5" style="margin-bottom: 20px; color: #555;">
+            Affiliation
+          </div>
+
+          <div class="publication-links">
+            <span class="link-block">
+              <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fas fa-file-alt"></i></span>
+                <span>Paper</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fab fa-github"></i></span>
+                <span>Code</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser + TL;DR -->
+<section class="hero teaser" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <div class="placeholder-media">
+        Teaser figure placeholder
+      </div>
+    </div>
+  </div>
+
+  <div class="container is-max-desktop has-text-centered">
+    <div class="custom-blue-box">
+      <h2 class="title is-2 hire-accent">TL;DR</h2>
+      <div class="content has-text-justified">
+        <p class="is-size-6">
+          We introduce <span class="tldr-acronym">HiRE</span> (<span class="tldr-highlight">Hi</span>ndsight <span class="tldr-highlight">R</span>eward <span class="tldr-highlight">E</span>diting), a <span class="hire-highlight">training-free</span> framework that breaks the reward bottleneck in RL policy finetuning.
+          HiRE bridges foundation representation models with physical control awareness by contrasting successful and failed trajectories in hindsight.
+          It identifies <span class="hire-highlight">trap states</span> that look rewarding in latent space but lead to failure, penalizes them, and boosts rewards for critical successful states.
+          HiRE is compatible with any foundation representations and RL algorithms, and significantly improves finetuning performance with minimal computation.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Method Overview -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered section-title">Method</h2>
+
+    <div class="content has-text-justified">
+      <p>
+        HiRE estimates a control-aware potential in foundation representation space via non-parametric kernel density estimation,
+        contrasting success and failure buffers collected during online finetuning.
+        The edited reward is integrated with sparse task success signals through potential-based reward shaping,
+        providing dense guidance while preserving the optimal policy for task completion.
+      </p>
+    </div>
+
+    <div class="placeholder-media">
+      Method overview figure placeholder
+    </div>
+  </div>
+</section>
+
+<!-- Simulation Results -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered section-title">Simulation Results</h2>
+
+    <h3 class="title is-4 has-text-centered subsection-title">Comparative Results</h3>
+
+    <div class="content has-text-justified">
+      <p>
+        We evaluate HiRE on RoboMimic and MimicGen benchmarks (Tool Hang, Threading, Stack Three, Three Piece Assembly),
+        using DICE-RL as the policy finetuning backbone with DINOv2 / SigLIP encoders.
+        HiRE is compared against sparse reward and RoboMeter under the same finetuning setup.
+      </p>
+    </div>
+
+    <div class="placeholder-media">
+      Main results learning curves (Fig. 1) placeholder
+    </div>
+  </div>
+</section>
+
+<!-- Visualization & Analyses -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered section-title">Visualization &amp; Analyses</h2>
+
+    <h3 class="title is-4 has-text-centered subsection-title">Reward Landscape</h3>
+    <div class="content has-text-justified">
+      <p>
+        HiRE corrects false negatives and false positives from raw foundation-representation similarity,
+        staying faithful to task progress along representative trajectories.
+      </p>
+    </div>
+    <div class="placeholder-media">
+      Reward visualization (Fig. 2) placeholder
+    </div>
+
+    <h3 class="title is-4 has-text-centered subsection-title">Buffer Dynamics</h3>
+    <div class="content has-text-justified">
+      <p>
+        Positive and negative buffers co-adapt during finetuning, capturing stage-progressive failure modes
+        while keeping the success manifold concentrated.
+      </p>
+    </div>
+    <div class="placeholder-media">
+      Buffer t-SNE visualization (Fig. 3) placeholder
+    </div>
+  </div>
+</section>
+
+<!-- Real Robot Results -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered section-title">Real Robot Results</h2>
+
+    <div class="content has-text-justified">
+      <p>
+        We evaluate HiRE on real-world manipulation tasks with a YAM robot arm,
+        comparing against sparse reward and RoboMeter under the same DICE-RL finetuning pipeline.
+      </p>
+    </div>
+
+    <div class="placeholder-media">
+      Real-robot results placeholder
+    </div>
+  </div>
+</section>
+
+<!-- Ablations -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered section-title">Ablations</h2>
+
+    <div class="content has-text-justified">
+      <p>
+        Ablations study foundation representation choice, reward composition (PBRS vs. raw similarity),
+        and buffer design (full HiRE vs. positive-buffer-only).
+      </p>
+    </div>
+
+    <div class="placeholder-media">
+      Ablation results placeholder
+    </div>
+  </div>
+</section>
+
+<!-- Citation -->
+<section class="section" style="padding-bottom: 0;">
+  <div class="container is-max-desktop">
+    <div style="background-color: #f5f5f5; border-radius: 10px; padding: 30px; border-left: 4px solid #2E6F95;">
+      <h2 class="title is-4 has-text-centered hire-accent" style="margin-bottom: 20px;">Citation</h2>
+      <pre style="background-color: #e8e8e8; color: #333; padding: 20px; border-radius: 8px; overflow-x: auto; font-size: 0.85rem;"><code>@inproceedings{hire2026,
+  title={HiRE: Hindsight Reward Editing for Policy Finetuning},
+  author={Anonymous},
+  booktitle={Conference on Robot Learning (CoRL)},
+  year={2026}
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="has-text-centered" style="padding: 20px;">
+      <h2 class="title is-5 hire-accent" style="margin-bottom: 10px;">Contact</h2>
+      <p style="color: #555; font-size: 0.95rem;">
+        Questions? Please contact us at <a href="mailto:email@example.com" class="hire-accent">email@example.com</a>.
+      </p>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
