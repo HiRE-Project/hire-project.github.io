@@ -55,6 +55,22 @@
     .figure-block {
       margin: 25px 0;
     }
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin: 25px 0;
+    }
+    .video-grid video {
+      width: 100%;
+      border-radius: 8px;
+      display: block;
+    }
+    @media screen and (max-width: 600px) {
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+    }
     code {
       color: inherit;
       background-color: transparent;
@@ -286,6 +302,18 @@
       <p class="figure-caption">
         <strong>Six fixed initial bottle positions (P1&ndash;P6) used for evaluation</strong>, spanning a wide tabletop workspace.
       </p>
+    </div>
+
+    <h3 class="title is-4 subsection-title has-text-centered">Emergent Behaviors during Deployment</h3>
+
+    <div class="video-grid">
+      <video src="videos/emergent/emergent_1.mp4" autoplay loop muted playsinline></video>
+      <video src="videos/emergent/emergent_2.mp4" autoplay loop muted playsinline></video>
+      <video src="videos/emergent/emergent_3.mp4" autoplay loop muted playsinline></video>
+      <video src="videos/emergent/emergent_4.mp4" autoplay loop muted playsinline></video>
+      <video src="videos/emergent/emergent_5.mp4" autoplay loop muted playsinline></video>
+      <video src="videos/emergent/emergent_6.mp4" autoplay loop muted playsinline></video>
+      <video src="videos/emergent/emergent_7.mp4" autoplay loop muted playsinline></video>
     </div>
   </div>
 </section>
