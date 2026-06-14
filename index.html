@@ -66,6 +66,13 @@
       border-radius: 8px;
       display: block;
     }
+    .video-label {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #444;
+      text-align: center;
+      margin-top: 8px;
+    }
     @media screen and (max-width: 600px) {
       .video-grid {
         grid-template-columns: 1fr;
@@ -305,12 +312,30 @@
     </div>
 
     <div class="video-grid">
-      <video src="videos/success/success_3.mp4" autoplay loop muted playsinline></video>
-      <video src="videos/success/success_5.mp4" autoplay loop muted playsinline></video>
-      <video src="videos/success/success_4.mp4" autoplay loop muted playsinline></video>
-      <video src="videos/success/success_6.mp4" autoplay loop muted playsinline></video>
-      <video src="videos/success/success_2.mp4" autoplay loop muted playsinline></video>
-      <video src="videos/success/success_1.mp4" autoplay loop muted playsinline></video>
+      <div class="video-cell">
+        <video src="videos/success/success_3.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">P1</p>
+      </div>
+      <div class="video-cell">
+        <video src="videos/success/success_5.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">P2</p>
+      </div>
+      <div class="video-cell">
+        <video src="videos/success/success_4.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">P3</p>
+      </div>
+      <div class="video-cell">
+        <video src="videos/success/success_6.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">P4</p>
+      </div>
+      <div class="video-cell">
+        <video src="videos/success/success_2.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">P5</p>
+      </div>
+      <div class="video-cell">
+        <video src="videos/success/success_1.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">P6</p>
+      </div>
     </div>
 
     <h3 class="title is-4 subsection-title has-text-centered">Emergent Behaviors during Deployment</h3>
