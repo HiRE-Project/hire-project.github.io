@@ -45,12 +45,22 @@
       display: block;
       margin: 0 auto;
     }
+    .paper-figure.compact-plot {
+      max-width: 62%;
+    }
     .figure-caption {
       font-size: 0.85rem;
       color: #666;
       text-align: center;
       margin-top: 10px;
       padding: 0 5%;
+    }
+    .figure-note {
+      display: block;
+      margin-top: 4px;
+      color: #888;
+      font-size: 0.72rem;
+      font-weight: normal;
     }
     .figure-block {
       margin: 25px 0;
@@ -65,6 +75,22 @@
       width: 100%;
       border-radius: 8px;
       display: block;
+      background: #f0f2f4;
+    }
+    .hanoi-video-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      max-width: 900px;
+      margin: 25px auto;
+    }
+    .hanoi-video-grid video {
+      width: 100%;
+      max-height: 270px;
+      border-radius: 8px;
+      display: block;
+      object-fit: cover;
+      background: #f0f2f4;
     }
     .video-label {
       font-size: 0.9rem;
@@ -73,9 +99,73 @@
       text-align: center;
       margin-top: 8px;
     }
+    .new-result-tag {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: #eaf2f7;
+      color: #2E6F95;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .results-table-wrap {
+      margin: 25px auto;
+      overflow-x: auto;
+    }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 0.92rem;
+    }
+    .results-table th,
+    .results-table td {
+      padding: 12px 14px;
+      border: 1px solid #dfe5e8;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .results-table th {
+      background: #f7f9fa;
+      color: #333;
+      font-weight: 700;
+    }
+    .results-table th:first-child,
+    .results-table td:first-child {
+      text-align: left;
+    }
+    .results-table .best {
+      color: #2E6F95;
+      font-weight: 700;
+    }
+    .new-results-section {
+      background: #fbfcfd;
+      border-top: 1px solid #edf1f3;
+      border-bottom: 1px solid #edf1f3;
+    }
+    .result-divider {
+      height: 1px;
+      margin: 45px auto;
+      background: #dfe5e8;
+      border: 0;
+    }
     @media screen and (max-width: 600px) {
+      .paper-figure.compact-plot {
+        max-width: 100%;
+      }
       .video-grid {
         grid-template-columns: 1fr;
+      }
+      .hanoi-video-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media screen and (min-width: 601px) and (max-width: 900px) {
+      .hanoi-video-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
     code {
@@ -140,6 +230,206 @@
           HiRE is compatible with any foundation representations and RL algorithms, and significantly improves finetuning performance with minimal computation.
         </p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- Rebuttal Results -->
+<section class="section new-results-section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered section-title">Rebuttal Results</h2>
+
+    <h3 class="title is-4 has-text-centered subsection-title" style="margin-top: 25px;">Additional Reward Baselines</h3>
+    <div class="content has-text-justified">
+      <p>
+        We additionally evaluate <strong>TOPReward</strong>, a strong recent training-free VLM reward method
+        that outperforms GVL and is competitive with RoboMeter-4B, and <strong>GCR</strong>, which adapts
+        its learned reward using online failure experience. Under the same DICE-RL setting,
+        HiRE consistently achieves stronger performance across all four tasks.
+      </p>
+      <p>
+        <strong>(1) Higher performance.</strong>
+        At matched horizons, success rates for HiRE / GCR / TOPReward are
+        <strong>48.7%</strong> / 42.1% / 16.6% on <code>Stack_Three</code> and
+        <strong>71.1%</strong> / 34.6% / 4.6% on <code>Three_Piece_Assembly</code>.
+        On the more challenging <code>Threading</code> and <code>Tool_Hang</code> tasks,
+        HiRE ultimately reaches <strong>91.5%</strong> and <strong>59.1%</strong> success,
+        while neither GCR nor TOPReward reaches 10% within its evaluated horizon.
+      </p>
+      <p>
+        <strong>(2) Better sample efficiency.</strong>
+        At the 30% success threshold, environment steps for HiRE / GCR / TOPReward are
+        <strong>204.8k</strong> / 563.2k / not reached on <code>Stack_Three</code> and
+        <strong>294.4k</strong> / 896k / not reached on <code>Three_Piece_Assembly</code>.
+        HiRE therefore reaches 30% success <strong>2.75&times;</strong> faster than GCR on
+        <code>Stack_Three</code> and <strong>3.04&times;</strong> faster on <code>Three_Piece_Assembly</code>.
+      </p>
+      <p>
+        These baselines cover complementary adaptation mechanisms.
+        TOPReward provides strong zero-shot progress estimates but does not adapt to physical success and failure
+        outcomes observed online. GCR does use online failures, but gradient-updates its representation model
+        through VIP and goal-contrastive optimization while learning the policy. In contrast, HiRE keeps the
+        foundation representation fixed and directly adapts the reward landscape through lightweight,
+        training-free updates to \(\mathcal{B}^{+}\) and \(\mathcal{B}^{-}\), decoupling reward adaptation
+        from policy optimization.
+      </p>
+    </div>
+
+    <div class="figure-block">
+      <img src="images/additional_baselines.png" alt="HiRE compared with GCR, TOPReward, and RoboMeter-R on four simulation tasks" class="paper-figure">
+      <p class="figure-caption">
+        <strong>Additional reward baselines.</strong>
+        HiRE consistently outperforms GCR, TOPReward, and RoboMeter-R across all four simulation tasks.
+        <span class="figure-note">For visualization only, baseline curves that remain at 0% are extended to the midpoint of the corresponding plot.</span>
+      </p>
+    </div>
+
+    <hr class="result-divider">
+
+    <h3 class="title is-4 subsection-title has-text-centered">Additional High-Precision Hardware Task</h3>
+    <div class="content has-text-justified">
+      <p>
+        We additionally evaluate HiRE on a Towers of Hanoi task that requires the robot to grasp the green disk
+        from the rightmost rod and place it precisely onto the middle rod.
+        The shared base policy starts at 20.0% success.
+        With only 20 online episodes, HiRE reaches <strong>53.3%</strong>, and it peaks at
+        <strong>73.3%</strong> after 50 episodes&mdash;3.67&times; the base policy.
+        In comparison, sparse-reward finetuning peaks at 53.3% and RoboMeter peaks at 46.7%,
+        while both baselines degrade sharply by 50 episodes.
+      </p>
+    </div>
+
+    <div class="figure-block">
+      <img src="images/hanoi_task_setup.jpg" alt="Robot and Towers of Hanoi setup for the additional hardware task" class="paper-figure" style="max-width: 82%;">
+      <p class="figure-caption">
+        <strong>High-precision Towers of Hanoi task.</strong>
+        The robot must move the green disk from the rightmost rod to the middle rod.
+      </p>
+    </div>
+
+    <div class="figure-block">
+      <img src="images/hanoi_success_curve.png" alt="Success rate during online finetuning on the Towers of Hanoi task" class="paper-figure compact-plot">
+      <p class="figure-caption">
+        <strong>Towers of Hanoi success rate.</strong>
+        HiRE improves rapidly from the 20% base policy and reaches 73.3% after 50 online episodes, while both baselines degrade at later stages.
+      </p>
+    </div>
+
+    <div class="results-table-wrap">
+      <table class="results-table">
+        <caption class="is-sr-only">Towers of Hanoi success rates during online finetuning</caption>
+        <thead>
+          <tr>
+            <th scope="col">Online episodes</th>
+            <th scope="col">HiRE</th>
+            <th scope="col">Sparse reward</th>
+            <th scope="col">RoboMeter</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0 (base policy)</td>
+            <td>20.0%</td>
+            <td>20.0%</td>
+            <td>20.0%</td>
+          </tr>
+          <tr>
+            <td>20</td>
+            <td class="best">53.3%</td>
+            <td>46.7%</td>
+            <td>26.7%</td>
+          </tr>
+          <tr>
+            <td>30</td>
+            <td class="best">60.0%</td>
+            <td>53.3%</td>
+            <td>40.0%</td>
+          </tr>
+          <tr>
+            <td>40</td>
+            <td class="best">53.3%</td>
+            <td>26.7%</td>
+            <td>46.7%</td>
+          </tr>
+          <tr>
+            <td>50</td>
+            <td class="best">73.3%</td>
+            <td>30.0%</td>
+            <td>20.0%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content has-text-justified">
+      <p>Representative successful rollouts are shown below:</p>
+    </div>
+    <div class="hanoi-video-grid">
+      <div class="video-cell">
+        <video src="videos/hanoi/rollout_1.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">Rollout 1</p>
+      </div>
+      <div class="video-cell">
+        <video src="videos/hanoi/rollout_2.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">Rollout 2</p>
+      </div>
+      <div class="video-cell">
+        <video src="videos/hanoi/rollout_3.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">Rollout 3</p>
+      </div>
+      <div class="video-cell">
+        <video src="videos/hanoi/rollout_4.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">Rollout 4</p>
+      </div>
+      <div class="video-cell">
+        <video src="videos/hanoi/rollout_5.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">Rollout 5</p>
+      </div>
+      <div class="video-cell">
+        <video src="videos/hanoi/rollout_6.mp4" autoplay loop muted playsinline></video>
+        <p class="video-label">Rollout 6</p>
+      </div>
+    </div>
+
+    <hr class="result-divider">
+
+    <h3 class="title is-4 has-text-centered subsection-title">Hyperparameter Sensitivity</h3>
+    <div class="content has-text-justified">
+      <p>
+        We evaluate sensitivity by setting \(\lambda\) to 0.3 or 0.7 and increasing the negative-buffer
+        capacity to 512. Across <code>Stack_Three</code>, <code>Tool_Hang</code>, and
+        <code>Three_Piece_Assembly</code>, all variants yield comparable performance, demonstrating that HiRE
+        is broadly insensitive to these hyperparameters. Only the high-precision <code>Threading</code> task
+        shows notable sensitivity: a larger buffer retains outdated failures and weakens the focus on current
+        traps, while a smaller \(\lambda\) provides insufficient repulsion when the failure distribution is broad.
+        Both observations are consistent with HiRE's design.
+      </p>
+      <p>
+        <strong>Generality to RL algorithms.</strong>
+        DICE-RL provides a representative testbed for evaluating the reward recipe: it combines the stability
+        of distillation, the efficiency of steering, and the flexibility of correction, drawing strengths from
+        different mainstream robotic policy-finetuning paradigms. HiRE remains algorithm-agnostic at the reward
+        interface because it edits the reward independently of the policy-finetuning backbone.
+      </p>
+    </div>
+
+    <div class="figure-block">
+      <img src="images/hyperparameter_sensitivity.png" alt="Sensitivity to repulsion weight and negative-buffer capacity on four simulation tasks" class="paper-figure">
+      <p class="figure-caption">
+        <strong>Hyperparameter sensitivity.</strong>
+        Performance under two repulsion weights and an enlarged negative buffer, compared with the original HiRE configuration.
+      </p>
+    </div>
+
+    <hr class="result-divider">
+
+    <h3 class="title is-4 subsection-title has-text-centered">Updated Real-Robot Evaluation</h3>
+    <div class="figure-block">
+      <img src="images/pick_place_success_curve.png" alt="Success rate during online finetuning on the bottle pick-and-place task" class="paper-figure compact-plot">
+      <p class="figure-caption">
+        <strong>Bottle pick-and-place success rate.</strong>
+        HiRE improves from the 20% base policy to 66.7%, whereas sparse-reward and RoboMeter finetuning fail to improve the policy.
+      </p>
     </div>
   </div>
 </section>
@@ -227,6 +517,7 @@
         Success rate versus online environment steps, averaged over 3 seeds.
       </p>
     </div>
+
   </div>
 </section>
 
@@ -361,6 +652,7 @@
       <video src="videos/emergent/emergent_5.mp4" autoplay loop muted playsinline></video>
       <video src="videos/emergent/emergent_6.mp4" autoplay loop muted playsinline></video>
     </div>
+
   </div>
 </section>
 
@@ -419,6 +711,7 @@
         Full HiRE vs. positive-buffer-only.
       </p>
     </div>
+
   </div>
 </section>
 
