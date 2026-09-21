@@ -1,0 +1,176 @@
+/* A simple academic project page, inspired by https://nerfies.github.io/. */
+:root {
+  --text: #4a4a4a;
+  --heading: #363636;
+  --link: #209cee;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--text);
+  font-family: "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p, figure { margin: 0; }
+h1, h2, h3 { color: var(--heading); font-weight: 600; line-height: 1.2; }
+h1 { font-size: 48px; letter-spacing: -1.5px; }
+h2 { margin-bottom: 24px; font-size: 32px; text-align: center; }
+h3 { margin: 26px 0 16px; font-size: 23px; }
+p + p { margin-top: 16px; }
+a { color: var(--link); text-decoration: none; }
+a:hover { color: #1679b8; text-decoration: underline; }
+strong { color: var(--heading); font-weight: 600; }
+sup, sub { font-size: .7em; line-height: 0; }
+img { display: block; max-width: 100%; height: auto; }
+button { font: inherit; }
+a:focus-visible, button:focus-visible, video:focus-visible {
+  outline: 3px solid var(--link);
+  outline-offset: 4px;
+}
+[hidden] { display: none !important; }
+.container { width: min(960px, calc(100% - 48px)); margin-inline: auto; }
+.reading, .prose { max-width: 840px; margin-inline: auto; }
+.section { padding: 32px 0; }
+.hero { padding-top: 48px; padding-bottom: 24px; text-align: center; }
+.title-second { font-size: 1em; }
+.authors {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 14px;
+  margin-top: 28px;
+  color: var(--link);
+  font-size: 20px;
+}
+.authors span { white-space: nowrap; }
+.authors sup { color: var(--text); margin-left: 2px; }
+.affiliations {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 18px;
+  margin-top: 7px;
+  font-size: 18px;
+}
+.author-note { margin-top: 10px; font-size: 12px; }
+.resource-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 20px; }
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 20px;
+  background: #363636;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+.button:hover { background: #292929; color: #fff; text-decoration: none; }
+.unavailable { cursor: default; }
+.teaser-caption { margin-top: 24px; font-size: 20px; line-height: 1.5; }
+#overview p { text-align: justify; }
+.equation-panel { margin: 20px 0; padding: 8px 0; text-align: center; }
+.method-note, .small-note { font-size: 14px; }
+.paper-figure { margin: 28px 0 34px; }
+.paper-figure img { width: 100%; }
+.paper-figure figcaption { margin-top: 12px; font-size: 14px; text-align: center; }
+.paper-figure.compact { max-width: 620px; margin-inline: auto; }
+.citation-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.citation-heading h2 { text-align: left; margin-bottom: 0; }
+#copy-citation { background: #f1f1f1; color: var(--text); font-size: 13px; }
+pre { padding: 22px; margin: 22px 0 12px; overflow-x: auto; background: #f5f5f5; font-size: 13px; line-height: 1.6; }
+code { font-family: "SFMono-Regular", Consolas, monospace; }
+.citation-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: 13px; }
+footer { padding: 40px 0; background: #fafafa; font-size: 14px; }
+footer p + p { margin-top: 8px; }
+.skip-link { position: fixed; top: -80px; left: 12px; padding: 10px 16px; background: #fff; z-index: 10; }
+.skip-link:focus { top: 12px; }
+@media (max-width: 700px) {
+  h1 { font-size: 36px; letter-spacing: -1px; }
+  .authors { font-size: 18px; }
+  .affiliations { font-size: 16px; }
+}
+@media (max-width: 480px) {
+  .container { width: calc(100% - 32px); }
+  .hero { padding-top: 32px; }
+  h1 { font-size: 30px; }
+  h2 { font-size: 27px; }
+  h3 { font-size: 21px; }
+  .authors { font-size: 16px; gap: 4px 12px; margin-top: 22px; }
+  .affiliations { font-size: 14px; }
+  .author-note { font-size: 11px; }
+  .button { font-size: 13px; padding: 8px 14px; }
+  .teaser-caption { font-size: 18px; }
+  .desktop-break { display: none; }
+  .section { padding: 30px 0; }
+  #overview p { text-align: left; }
+  .paper-figure figcaption { font-size: 12px; }
+  pre { font-size: 11px; padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print {
+  .container { width: 100%; }
+  .section { padding: 20px 0; }
+  .paper-figure { break-inside: avoid; }
+}
+
+/* Demonstrations keep the source aspect ratio and a single centered caption. */
+.showcase { margin: 32px auto 0; max-width: 840px; }
+.demo-tabs, .analysis-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 24px; border-bottom: 1px solid #e5e5e5; }
+.demo-tabs button, .analysis-tabs button { border: 0; border-bottom: 2px solid transparent; padding: 10px 2px; background: none; color: #777; font-size: 14px; cursor: pointer; }
+.demo-tabs button[aria-pressed="true"], .analysis-tabs button[aria-pressed="true"] { color: #363636; border-bottom-color: #363636; font-weight: 600; }
+.demo-stage { padding-top: 22px; }
+.demo-screen { width: 100%; }
+.demo-screen video { display: block; width: 100%; height: auto; border-radius: 4px; background: #fff; }
+.demo-stage.is-portrait video { width: auto; height: min(480px, 65vh); max-width: 100%; margin-inline: auto; }
+.demo-caption { max-width: 720px; margin: 16px auto 0; text-align: center; font-size: 14px; line-height: 1.6; color: #666; }
+.clip-controls { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 14px; }
+.demo-clips { display: flex; gap: 10px; }
+.demo-clips button, .clip-arrow { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 34px; padding: 0 6px; border: 0; border-bottom: 2px solid transparent; background: none; color: #888; cursor: pointer; font-size: 13px; }
+.demo-clips button[aria-pressed="true"] { color: #363636; border-bottom-color: #363636; font-weight: 600; }
+.clip-arrow { font-size: 25px; }
+.demo-clips button:hover, .clip-arrow:hover { color: #222; }
+#demo-status { margin-top: 6px; text-align: center; font-size: 11px; color: #888; }
+#experiments h3, #analysis h3 { max-width: 840px; margin-inline: auto; margin-top: 30px; }
+.paper-figure figcaption { max-width: 840px; margin-inline: auto; font-size: 13px; color: #666; }
+.ablation-block { margin-top: 32px; }
+.analysis-tabs { justify-content: flex-start; margin: 0 auto 22px; max-width: 840px; gap: 4px 20px; }
+.analysis-panel h4 { max-width: 840px; margin: 0 auto 12px; font-size: 17px; font-weight: 600; }
+.analysis-panel > p { max-width: 840px; margin-inline: auto; }
+.analysis-panel .paper-figure { margin-bottom: 0; }
+.equation-panel { color: #333; font-size: 18px; }
+.equation-panel .katex-display { margin: 0; }
+.equation-narrow { display: none; }
+@media (max-width: 800px) {
+  .equation-wide { display: none; }
+  .equation-narrow { display: block; }
+}
+@media (max-width: 480px) {
+  .demo-tabs { gap: 0 14px; }
+  .demo-tabs button { font-size: 11px; }
+  .demo-stage { padding-top: 16px; }
+  .demo-caption { font-size: 13px; }
+  .demo-clips { gap: 4px; }
+  .clip-controls { gap: 8px; }
+  .demo-clips button { min-width: 29px; }
+  .analysis-tabs { gap: 0 16px; }
+  .analysis-tabs button { font-size: 12px; }
+  .equation-panel { font-size: 15px; }
+}
+@media print { .showcase, .analysis-tabs { display: none; } }
+
+/* Task identifiers match the manuscript's texttt notation. */
+code.task-name {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: .85em;
+  color: inherit;
+  background: none;
+  padding: 0;
+  overflow-wrap: anywhere;
+}

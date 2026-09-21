@@ -1,746 +1,98 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
   <title>HiRE: Hindsight Reward Editing for Policy Finetuning</title>
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito" type="text/css">
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-  <style>
-    .hire-accent {
-      color: #2E6F95;
-    }
-    .hire-highlight {
-      font-weight: bold;
-    }
-    .tldr-highlight {
-      font-weight: bold;
-    }
-    .tldr-acronym {
-      color: #2E6F95;
-      font-weight: bold;
-    }
-    .section-title {
-      color: #222;
-      margin-bottom: 25px;
-    }
-    .subsection-title {
-      color: #444;
-      margin-bottom: 20px;
-      margin-top: 40px;
-    }
-    .custom-blue-box {
-      padding: 30px 35px;
-      background-color: #f7f9fa;
-      border-radius: 10px;
-      margin: 2% 0;
-    }
-    .paper-figure {
-      width: 100%;
-      border-radius: 8px;
-      display: block;
-      margin: 0 auto;
-    }
-    .paper-figure.compact-plot {
-      max-width: 62%;
-    }
-    .figure-caption {
-      font-size: 0.85rem;
-      color: #666;
-      text-align: center;
-      margin-top: 10px;
-      padding: 0 5%;
-    }
-    .figure-note {
-      display: block;
-      margin-top: 4px;
-      color: #888;
-      font-size: 0.72rem;
-      font-weight: normal;
-    }
-    .figure-block {
-      margin: 25px 0;
-    }
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
-      margin: 25px 0;
-    }
-    .video-grid video {
-      width: 100%;
-      border-radius: 8px;
-      display: block;
-      background: #f0f2f4;
-    }
-    .hanoi-video-grid {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 10px;
-      max-width: 900px;
-      margin: 25px auto;
-    }
-    .hanoi-video-grid video {
-      width: 100%;
-      max-height: 270px;
-      border-radius: 8px;
-      display: block;
-      object-fit: cover;
-      background: #f0f2f4;
-    }
-    .video-label {
-      font-size: 0.9rem;
-      font-weight: bold;
-      color: #444;
-      text-align: center;
-      margin-top: 8px;
-    }
-    .new-result-tag {
-      display: inline-block;
-      margin-bottom: 12px;
-      padding: 5px 12px;
-      border-radius: 999px;
-      background: #eaf2f7;
-      color: #2E6F95;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
-    .results-table-wrap {
-      margin: 25px auto;
-      overflow-x: auto;
-    }
-    .results-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      font-size: 0.92rem;
-    }
-    .results-table th,
-    .results-table td {
-      padding: 12px 14px;
-      border: 1px solid #dfe5e8;
-      text-align: center;
-      white-space: nowrap;
-    }
-    .results-table th {
-      background: #f7f9fa;
-      color: #333;
-      font-weight: 700;
-    }
-    .results-table th:first-child,
-    .results-table td:first-child {
-      text-align: left;
-    }
-    .results-table .best {
-      color: #2E6F95;
-      font-weight: 700;
-    }
-    .new-results-section {
-      background: #fbfcfd;
-      border-top: 1px solid #edf1f3;
-      border-bottom: 1px solid #edf1f3;
-    }
-    .result-divider {
-      height: 1px;
-      margin: 45px auto;
-      background: #dfe5e8;
-      border: 0;
-    }
-    @media screen and (max-width: 600px) {
-      .paper-figure.compact-plot {
-        max-width: 100%;
-      }
-      .video-grid {
-        grid-template-columns: 1fr;
-      }
-      .hanoi-video-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-    @media screen and (min-width: 601px) and (max-width: 900px) {
-      .hanoi-video-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-    code {
-      color: inherit;
-      background-color: transparent;
-      padding: 0;
-      font-size: 0.95em;
-    }
-  </style>
+  <meta name="description" content="HiRE grounds foundation representations in physical outcomes: training-free reward editing suppresses failure traps and improves robot policy finetuning.">
+  <link rel="canonical" href="https://hire-project.github.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="HiRE: Hindsight Reward Editing for Policy Finetuning">
+  <meta property="og:description" content="Training-free reward editing for robot policy finetuning. Dense guidance from success and failure, in simulation and on real robots.">
+  <meta property="og:url" content="https://hire-project.github.io/">
+  <meta property="og:image" content="https://hire-project.github.io/images/social-preview.jpg">
+  <meta property="og:image:alt" content="HiRE real-robot rollouts and success rates for bottle pick-and-place and Towers of Hanoi">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css?v=951852c7e4">
+  <script src="assets/site.js?v=52a5683efb" defer></script>
 </head>
-
 <body>
-
-<!-- Hero -->
-<section class="hero">
-  <div class="hero-body" style="padding-bottom: 0;">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-          <h1 class="title is-2 publication-title">
-            <span class="hire-accent">HiRE</span>: Hindsight Reward Editing<br>
-            <span style="font-size: 0.75em;">for Policy Finetuning</span>
-          </h1>
-
-          <div class="is-size-4" style="margin-bottom: 15px; color: #555;">
-            Anonymous Author(s)
-          </div>
-          <div class="is-size-5" style="margin-bottom: 20px; color: #555;">
-            Affiliation
-          </div>
-
-          <div class="publication-links">
-            <span class="link-block">
-              <a href="#" class="external-link button is-normal is-rounded is-dark">
-                <span class="icon"><i class="fas fa-file-alt"></i></span>
-                <span>Paper</span>
-              </a>
-            </span>
-            <span class="link-block">
-              <a href="#" class="external-link button is-normal is-rounded is-dark">
-                <span class="icon"><i class="fab fa-github"></i></span>
-                <span>Code</span>
-              </a>
-            </span>
-          </div>
-        </div>
-      </div>
+<a class="skip-link" href="#main">Skip to content</a>
+<main id="main">
+  <section class="hero container" id="top" aria-labelledby="paper-title">
+    <h1 id="paper-title"><span class="accent">HiRE</span>: Hindsight Reward Editing<br><span class="title-second">for Policy Finetuning</span></h1>
+    <div class="authors" aria-label="Authors">
+      <span><a href="https://t6-thu.github.io/" target="_blank" rel="noopener noreferrer">Haoyi Niu</a><sup>1,*</sup></span><span><a href="https://www.hanzht.com/" target="_blank" rel="noopener noreferrer">Zhengtao Han</a><sup>1,*</sup></span><span><a href="https://github.com/alicia-yufeng-ji" target="_blank" rel="noopener noreferrer" title="Yufeng Ji on GitHub">Yufeng Ji</a><sup>2</sup></span><span><a href="https://zyliatzju.github.io/" target="_blank" rel="noopener noreferrer">Zhongyu Li</a><sup>2</sup></span><span><a href="https://hybrid-robotics.berkeley.edu/koushil/" target="_blank" rel="noopener noreferrer">Koushil Sreenath</a><sup>1</sup></span>
     </div>
+    <p class="affiliations"><span><sup>1</sup> University of California, Berkeley</span><span><sup>2</sup> The Chinese University of Hong Kong</span></p>
+    <p class="author-note">* Equal contribution. Author order determined by coin flip and may be listed in either order.</p>
+    <div class="resource-links"><span class="button unavailable">Paper · Coming soon</span><span class="button unavailable">Code · Coming soon</span></div>
+  </section>
+  <section class="section" id="overview" aria-labelledby="overview-title"><div class="container reading">
+    <h2 id="overview-title">Abstract</h2>
+    <p>Reinforcement learning can improve pretrained robot policies, but its effectiveness depends on reward quality. Sparse rewards lack process feedback, while foundation representations often miss physical task outcomes. We propose <strong>Hindsight Reward Editing (HiRE)</strong>, a training-free framework that contrasts successful and failed rollouts to penalize deceptive traps and reinforce genuine task progress. HiRE provides dense, control-aware feedback without training an additional reward model and is compatible with different foundation representations and RL algorithms. Experiments in both simulation and the real world demonstrate significant gains in sample efficiency and task success rates.</p>
+  </div></section>
+  <section class="section" id="method" aria-labelledby="method-title"><div class="container">
+    <h2 id="method-title">Method</h2>
+    <p class="prose">A robot may move toward the placement area after dropping the object it was supposed to carry. The scene can look increasingly similar to the goal even though the task has already failed. HiRE addresses this mismatch by <strong>calibrating visual similarity against physical outcomes</strong>: successful experience identifies useful progress, while failed experience exposes misleading “trap states.”</p>
+    <p class="prose">The key idea is to estimate a <strong>log-density ratio between successful and failed states</strong> in a frozen foundation representation space. A positive buffer combines expert demonstrations with successful online experience; a negative buffer retains recent terminal failure observations. Using von Mises-Fisher kernels over cosine similarities, HiRE computes a closed-form potential that attracts the policy toward successful states and repels it from failure traps. The representation stays frozen, and <strong>reward adaptation requires no gradient updates</strong>.</p>
+    <p class="prose">HiRE integrates this potential with the sparse success signal through potential-based reward shaping. The temporal difference below supplies dense feedback while retaining task success as the objective:</p>
+    <div class="equation-panel"><div class="equation-wide"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>R</mi><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">R</mi><mi mathvariant="normal">E</mi></mrow></msub><mo stretchy="false">(</mo><mi>s</mi><mo separator="true">,</mo><mi>a</mi><mo separator="true">,</mo><msup><mi>s</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">)</mo><mo>=</mo><msub><mi>R</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi></mrow></msub><mo stretchy="false">(</mo><mi>s</mi><mo separator="true">,</mo><mi>a</mi><mo separator="true">,</mo><msup><mi>s</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">)</mo><mo>+</mo><mi>w</mi><mrow><mo fence="true">[</mo><mi>γ</mi><msub><mi mathvariant="normal">Φ</mi><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">R</mi><mi mathvariant="normal">E</mi></mrow></msub><mo stretchy="false">(</mo><msup><mi>s</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">)</mo><mo>−</mo><msub><mi mathvariant="normal">Φ</mi><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">R</mi><mi mathvariant="normal">E</mi></mrow></msub><mo stretchy="false">(</mo><mi>s</mi><mo stretchy="false">)</mo><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">R_{\mathrm{HiRE}}(s,a,s&#x27;) = R_{\mathrm{sparse}}(s,a,s&#x27;) + w\left[\gamma\Phi_{\mathrm{HiRE}}(s&#x27;)-\Phi_{\mathrm{HiRE}}(s)\right]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0519em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">HiRE</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">a</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.088em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">sparse</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">a</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0519em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord mathnormal" style="margin-right:0.05556em;">γ</span><span class="mord"><span class="mord">Φ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">HiRE</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord">Φ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">HiRE</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mclose">)</span><span class="mclose delimcenter" style="top:0em;">]</span></span></span></span></span></span></div><div class="equation-narrow"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="center" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><msub><mi>R</mi><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">R</mi><mi mathvariant="normal">E</mi></mrow></msub><mo stretchy="false">(</mo><mi>s</mi><mo separator="true">,</mo><mi>a</mi><mo separator="true">,</mo><msup><mi>s</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">)</mo><mo>=</mo><msub><mi>R</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi></mrow></msub><mo stretchy="false">(</mo><mi>s</mi><mo separator="true">,</mo><mi>a</mi><mo separator="true">,</mo><msup><mi>s</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">)</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>+</mo><mi>w</mi><mrow><mo fence="true">[</mo><mi>γ</mi><msub><mi mathvariant="normal">Φ</mi><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">R</mi><mi mathvariant="normal">E</mi></mrow></msub><mo stretchy="false">(</mo><msup><mi>s</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">)</mo><mo>−</mo><msub><mi mathvariant="normal">Φ</mi><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">R</mi><mi mathvariant="normal">E</mi></mrow></msub><mo stretchy="false">(</mo><mi>s</mi><mo stretchy="false">)</mo><mo fence="true">]</mo></mrow></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{gathered}R_{\mathrm{HiRE}}(s,a,s&#x27;) = R_{\mathrm{sparse}}(s,a,s&#x27;)\\ {}+ w\left[\gamma\Phi_{\mathrm{HiRE}}(s&#x27;)-\Phi_{\mathrm{HiRE}}(s)\right]\end{gathered}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3em;vertical-align:-1.25em;"></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.75em;"><span style="top:-3.91em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">HiRE</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">a</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">sparse</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">a</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord mathnormal" style="margin-right:0.05556em;">γ</span><span class="mord"><span class="mord">Φ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">HiRE</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord">Φ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">HiRE</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mclose">)</span><span class="mclose delimcenter" style="top:0em;">]</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.25em;"><span></span></span></span></span></span></span></span></span></span></span></span></div></div>
+    <p class="prose">As new rollouts arrive, FIFO buffers replace older online evidence, so reward editing follows the policy’s current strengths and failure modes. HiRE reshapes only the reward signal, making it compatible with different foundation representations and RL finetuning algorithms.</p>
+  </div></section>
+  <section class="section" id="experiments" aria-labelledby="experiments-title"><div class="container">
+    <h2 id="experiments-title">Experiments</h2>
+    <p class="prose">We ask whether a better reward can improve an already strong policy-finetuning pipeline. In the main comparisons, all methods use the same DICE-RL backbone and the same initial policy within each task. We compare HiRE with sparse success rewards, the pretrained robotic reward model RoboMeter, the training-free VLM reward TOPReward, and GCR, which adapts its reward representation through gradient-based updates.</p>
+    <h3 id="simulation">Simulation benchmarks</h3>
+    <p class="prose">HiRE improves both <strong>final success and sample efficiency</strong>. On <code class="task-name">Stack_Three</code> and <code class="task-name">Three_Piece_Assembly</code>, it reaches roughly 50% and over 80% success, compared with around 30% and 70% under sparse rewards. On <code class="task-name">Tool_Hang</code>, it enables learning where sparse-reward finetuning fails. On <code class="task-name">Threading</code>, it reaches comparable success with <strong>markedly fewer online interactions</strong>.</p>
+    <p class="prose">RoboMeter and TOPReward achieve substantially lower final success rates, suggesting limited reward generalization to these tasks. GCR adapts rewards from online failures through gradient-based updates, but needs <strong>roughly 3× as many interactions to reach 30% success</strong> on <code class="task-name">Stack_Three</code> and <code class="task-name">Three_Piece_Assembly</code>, and makes little progress on the precision tasks. HiRE achieves more consistent improvement through training-free reward editing.</p>
+    <figure class="paper-figure "><a href="images/main_comparison.png" target="_blank" rel="noopener" aria-label="Open full-size figure: HiRE and four reward baselines on Stack Three, Threading, Tool Hang and Three Piece Assembly"><img src="images/main_comparison.png" width="2600" height="729" alt="HiRE and four reward baselines on Stack Three, Threading, Tool Hang and Three Piece Assembly" loading="lazy" decoding="async"></a><figcaption>Simulation benchmark. Success rate versus online environment steps for different reward recipes under the same DICE-RL backbone.</figcaption></figure>
+    <h3 id="real-robot">Real-robot experiments</h3>
+    <p class="prose">On <code class="task-name">Bottle_Pick-and-Place</code>, HiRE steadily guides the policy toward better performance, boosting success from <strong>20% to 67%</strong>, whereas the sparse-reward and RoboMeter baselines nearly fail entirely in the early training phases. Evaluation spans six initial bottle positions, testing compliant manipulation and spatial generalization.</p>
+    <p class="prose">On <code class="task-name">Towers_of_Hanoi</code>, HiRE reaches <strong>53.3% success with only 20 episodes</strong> and eventually peaks at <strong>73.3%</strong> (3.67× the base policy). Sparse reward peaks at 53.3% after 30 episodes and RoboMeter at 46.7% after 40, before declining to 30% and 20%, respectively, at 50 episodes. These comparisons show HiRE’s superior sample efficiency, stable improvement, and higher policy performance ceiling on both hardware tasks.</p>
+    <figure class="paper-figure "><a href="images/realworld_showcase_and_sr.png" target="_blank" rel="noopener" aria-label="Open full-size figure: Successful bottle and Hanoi sequences alongside success-rate curves"><img src="images/realworld_showcase_and_sr.png" width="2220" height="568" alt="Successful bottle and Hanoi sequences alongside success-rate curves" loading="lazy" decoding="async"></a><figcaption>Real-robot evaluation. Successful rollouts (left) and success rates over online episodes (right). <code class="task-name">Bottle_Pick-and-Place</code> uses 30 evaluation trials per checkpoint across six initial positions; <code class="task-name">Towers_of_Hanoi</code> uses 15. The base policies are initialized from 117 and 50 teleoperated demonstrations, respectively.</figcaption></figure>
+    <section class="showcase" aria-label="Robot demonstrations">
+  <div class="demo-tabs" role="group" aria-label="Choose a demonstration task" hidden><button type="button" data-group="bottle" aria-pressed="true"><code class="task-name">Bottle_Pick-and-Place</code></button><button type="button" data-group="hanoi" aria-pressed="false"><code class="task-name">Towers_of_Hanoi</code></button><button type="button" data-group="recovery" aria-pressed="false">Recovery behaviors</button></div>
+  <div class="demo-stage">
+    <div class="demo-screen"><video id="demo-player" controls muted loop playsinline preload="metadata" poster="images/posters/success-success_3.jpg" aria-label="Bottle pick-and-place, Position P1"><source src="videos/success/success_3.mp4" type="video/mp4">Your browser does not support embedded video. <a href="videos/success/success_3.mp4">Download the rollout</a>.</video></div>
   </div>
-</section>
-
-<!-- TL;DR -->
-<section class="hero teaser" style="padding-top: 0;">
-  <div class="container is-max-desktop has-text-centered" style="margin-top: 30px;">
-    <div class="custom-blue-box">
-      <h2 class="title is-4" style="color: #222;">TL;DR</h2>
-      <div class="content has-text-justified">
-        <p class="is-size-6">
-          We introduce <span class="tldr-acronym">HiRE</span> (<span class="tldr-highlight">Hi</span>ndsight <span class="tldr-highlight">R</span>eward <span class="tldr-highlight">E</span>diting), a <span class="hire-highlight">training-free</span> framework that breaks the reward bottleneck in RL policy finetuning.
-          HiRE bridges foundation representation models with physical control awareness by contrasting successful and failed trajectories in hindsight.
-          It identifies <span class="hire-highlight">trap states</span> that look rewarding in latent space but lead to failure, penalizes them, and boosts rewards for critical successful states.
-          HiRE is compatible with any foundation representations and RL algorithms, and significantly improves finetuning performance with minimal computation.
-        </p>
-      </div>
-    </div>
+  <p id="demo-description" class="demo-caption">Compliant manipulation across six starting positions. The robot must grasp a deformable plastic bottle, carry it to the paper plate, and release it without slipping or bouncing away.</p>
+  <div class="clip-controls" hidden>
+    <button type="button" class="clip-arrow" id="previous-clip" aria-label="Previous rollout">‹</button>
+    <div id="demo-clips" class="demo-clips" role="group" aria-label="Choose a bottle pick-and-place rollout"></div>
+    <button type="button" class="clip-arrow" id="next-clip" aria-label="Next rollout">›</button>
   </div>
+  <p id="demo-status" aria-live="polite">Position P1 · 1 / 6</p>
+  <noscript><p>All demonstrations: <a href="videos/success/success_3.mp4"><code class="task-name">Bottle_Pick-and-Place</code>: Position P1</a> · <a href="videos/success/success_5.mp4"><code class="task-name">Bottle_Pick-and-Place</code>: Position P2</a> · <a href="videos/success/success_4.mp4"><code class="task-name">Bottle_Pick-and-Place</code>: Position P3</a> · <a href="videos/success/success_6.mp4"><code class="task-name">Bottle_Pick-and-Place</code>: Position P4</a> · <a href="videos/success/success_2.mp4"><code class="task-name">Bottle_Pick-and-Place</code>: Position P5</a> · <a href="videos/success/success_1.mp4"><code class="task-name">Bottle_Pick-and-Place</code>: Position P6</a> · <a href="videos/hanoi/rollout_1.mp4"><code class="task-name">Towers_of_Hanoi</code>: Rollout 1</a> · <a href="videos/hanoi/rollout_2.mp4"><code class="task-name">Towers_of_Hanoi</code>: Rollout 2</a> · <a href="videos/hanoi/rollout_3.mp4"><code class="task-name">Towers_of_Hanoi</code>: Rollout 3</a> · <a href="videos/hanoi/rollout_4.mp4"><code class="task-name">Towers_of_Hanoi</code>: Rollout 4</a> · <a href="videos/hanoi/rollout_5.mp4"><code class="task-name">Towers_of_Hanoi</code>: Rollout 5</a> · <a href="videos/hanoi/rollout_6.mp4"><code class="task-name">Towers_of_Hanoi</code>: Rollout 6</a> · <a href="videos/emergent/emergent_1.mp4">Recovery behaviors: Example 1</a> · <a href="videos/emergent/emergent_2.mp4">Recovery behaviors: Example 2</a> · <a href="videos/emergent/emergent_3.mp4">Recovery behaviors: Example 3</a> · <a href="videos/emergent/emergent_4.mp4">Recovery behaviors: Example 4</a> · <a href="videos/emergent/emergent_5.mp4">Recovery behaviors: Example 5</a> · <a href="videos/emergent/emergent_6.mp4">Recovery behaviors: Example 6</a></p></noscript>
+  <script id="demo-data" type="application/json">[{"id": "bottle", "name": "Bottle pick-and-place", "description": "The robot must grasp a deformable plastic bottle, carry it to the paper plate, and release it without slipping or bouncing away.", "clips": [{"src": "videos/success/success_3.mp4", "poster": "images/posters/success-success_3.jpg", "label": "Position P1"}, {"src": "videos/success/success_5.mp4", "poster": "images/posters/success-success_5.jpg", "label": "Position P2"}, {"src": "videos/success/success_4.mp4", "poster": "images/posters/success-success_4.jpg", "label": "Position P3"}, {"src": "videos/success/success_6.mp4", "poster": "images/posters/success-success_6.jpg", "label": "Position P4"}, {"src": "videos/success/success_2.mp4", "poster": "images/posters/success-success_2.jpg", "label": "Position P5"}, {"src": "videos/success/success_1.mp4", "poster": "images/posters/success-success_1.jpg", "label": "Position P6"}], "lead": "Compliant manipulation across six starting positions."}, {"id": "hanoi", "name": "Towers of Hanoi", "description": "Move the green disk from the rightmost rod to the middle rod. The unanchored base and sliding top cover make small alignment errors difficult to recover from.", "clips": [{"src": "videos/hanoi/rollout_1.mp4", "poster": "images/posters/hanoi-rollout_1.jpg", "label": "Rollout 1"}, {"src": "videos/hanoi/rollout_2.mp4", "poster": "images/posters/hanoi-rollout_2.jpg", "label": "Rollout 2"}, {"src": "videos/hanoi/rollout_3.mp4", "poster": "images/posters/hanoi-rollout_3.jpg", "label": "Rollout 3"}, {"src": "videos/hanoi/rollout_4.mp4", "poster": "images/posters/hanoi-rollout_4.jpg", "label": "Rollout 4"}, {"src": "videos/hanoi/rollout_5.mp4", "poster": "images/posters/hanoi-rollout_5.jpg", "label": "Rollout 5"}, {"src": "videos/hanoi/rollout_6.mp4", "poster": "images/posters/hanoi-rollout_6.jpg", "label": "Rollout 6"}], "lead": "Precise placement under platform shifts."}, {"id": "recovery", "name": "Recovery behaviors", "description": "These successful examples show the policy correcting its behavior after bottle displacement or unintended contact with the plate edge.", "clips": [{"src": "videos/emergent/emergent_1.mp4", "poster": "images/posters/emergent-emergent_1.jpg", "label": "Example 1"}, {"src": "videos/emergent/emergent_2.mp4", "poster": "images/posters/emergent-emergent_2.jpg", "label": "Example 2"}, {"src": "videos/emergent/emergent_3.mp4", "poster": "images/posters/emergent-emergent_3.jpg", "label": "Example 3"}, {"src": "videos/emergent/emergent_4.mp4", "poster": "images/posters/emergent-emergent_4.jpg", "label": "Example 4"}, {"src": "videos/emergent/emergent_5.mp4", "poster": "images/posters/emergent-emergent_5.jpg", "label": "Example 5"}, {"src": "videos/emergent/emergent_6.mp4", "poster": "images/posters/emergent-emergent_6.jpg", "label": "Example 6"}], "lead": "Recovery during deployment."}]</script>
 </section>
-
-<!-- Rebuttal Results -->
-<section class="section new-results-section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered section-title">Rebuttal Results</h2>
-
-    <h3 class="title is-4 has-text-centered subsection-title" style="margin-top: 25px;">Additional Reward Baselines</h3>
-    <div class="content has-text-justified">
-      <p>
-        We additionally evaluate <strong>TOPReward</strong>, a strong recent training-free VLM reward method
-        that outperforms GVL and is competitive with RoboMeter-4B, and <strong>GCR</strong>, which adapts
-        its learned reward using online failure experience. Under the same DICE-RL setting,
-        HiRE consistently achieves stronger performance across all four tasks.
-      </p>
-      <p>
-        <strong>(1) Higher performance.</strong>
-        At matched horizons, success rates for HiRE / GCR / TOPReward are
-        <strong>48.7%</strong> / 42.1% / 16.6% on <code>Stack_Three</code> and
-        <strong>71.1%</strong> / 34.6% / 4.6% on <code>Three_Piece_Assembly</code>.
-        On the more challenging <code>Threading</code> and <code>Tool_Hang</code> tasks,
-        HiRE ultimately reaches <strong>91.5%</strong> and <strong>59.1%</strong> success,
-        while neither GCR nor TOPReward reaches 10% within its evaluated horizon.
-      </p>
-      <p>
-        <strong>(2) Better sample efficiency.</strong>
-        At the 30% success threshold, environment steps for HiRE / GCR / TOPReward are
-        <strong>204.8k</strong> / 563.2k / not reached on <code>Stack_Three</code> and
-        <strong>294.4k</strong> / 896k / not reached on <code>Three_Piece_Assembly</code>.
-        HiRE therefore reaches 30% success <strong>2.75&times;</strong> faster than GCR on
-        <code>Stack_Three</code> and <strong>3.04&times;</strong> faster on <code>Three_Piece_Assembly</code>.
-      </p>
-      <p>
-        These baselines cover complementary adaptation mechanisms.
-        TOPReward provides strong zero-shot progress estimates but does not adapt to physical success and failure
-        outcomes observed online. GCR does use online failures, but gradient-updates its representation model
-        through VIP and goal-contrastive optimization while learning the policy. In contrast, HiRE keeps the
-        foundation representation fixed and directly adapts the reward landscape through lightweight,
-        training-free updates to \(\mathcal{B}^{+}\) and \(\mathcal{B}^{-}\), decoupling reward adaptation
-        from policy optimization.
-      </p>
-    </div>
-
-    <div class="figure-block">
-      <img src="images/additional_baselines.png" alt="HiRE compared with GCR, TOPReward, and RoboMeter-R on four simulation tasks" class="paper-figure">
-      <p class="figure-caption">
-        <strong>Additional reward baselines.</strong>
-        HiRE consistently outperforms GCR, TOPReward, and RoboMeter-R across all four simulation tasks.
-        <span class="figure-note">For visualization only, baseline curves that remain at 0% are extended to the midpoint of the corresponding plot.</span>
-      </p>
-    </div>
-
-    <hr class="result-divider">
-
-    <h3 class="title is-4 subsection-title has-text-centered">Additional High-Precision Hardware Task</h3>
-    <div class="content has-text-justified">
-      <p>
-        We additionally evaluate HiRE on a Towers of Hanoi task that requires the robot to grasp the green disk
-        from the rightmost rod and place it precisely onto the middle rod.
-        The shared base policy starts at 20.0% success.
-        With only 20 online episodes, HiRE reaches <strong>53.3%</strong>, and it peaks at
-        <strong>73.3%</strong> after 50 episodes&mdash;3.67&times; the base policy.
-        In comparison, sparse-reward finetuning peaks at 53.3% and RoboMeter peaks at 46.7%,
-        while both baselines degrade sharply by 50 episodes.
-      </p>
-    </div>
-
-    <div class="figure-block">
-      <img src="images/hanoi_task_setup.jpg" alt="Robot and Towers of Hanoi setup for the additional hardware task" class="paper-figure" style="max-width: 82%;">
-      <p class="figure-caption">
-        <strong>High-precision Towers of Hanoi task.</strong>
-        The robot must move the green disk from the rightmost rod to the middle rod.
-      </p>
-    </div>
-
-    <div class="figure-block">
-      <img src="images/hanoi_success_curve.png" alt="Success rate during online finetuning on the Towers of Hanoi task" class="paper-figure compact-plot">
-      <p class="figure-caption">
-        <strong>Towers of Hanoi success rate.</strong>
-        HiRE improves rapidly from the 20% base policy and reaches 73.3% after 50 online episodes, while both baselines degrade at later stages.
-      </p>
-    </div>
-
-    <div class="results-table-wrap">
-      <table class="results-table">
-        <caption class="is-sr-only">Towers of Hanoi success rates during online finetuning</caption>
-        <thead>
-          <tr>
-            <th scope="col">Online episodes</th>
-            <th scope="col">HiRE</th>
-            <th scope="col">Sparse reward</th>
-            <th scope="col">RoboMeter</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>0 (base policy)</td>
-            <td>20.0%</td>
-            <td>20.0%</td>
-            <td>20.0%</td>
-          </tr>
-          <tr>
-            <td>20</td>
-            <td class="best">53.3%</td>
-            <td>46.7%</td>
-            <td>26.7%</td>
-          </tr>
-          <tr>
-            <td>30</td>
-            <td class="best">60.0%</td>
-            <td>53.3%</td>
-            <td>40.0%</td>
-          </tr>
-          <tr>
-            <td>40</td>
-            <td class="best">53.3%</td>
-            <td>26.7%</td>
-            <td>46.7%</td>
-          </tr>
-          <tr>
-            <td>50</td>
-            <td class="best">73.3%</td>
-            <td>30.0%</td>
-            <td>20.0%</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="content has-text-justified">
-      <p>Representative successful rollouts are shown below:</p>
-    </div>
-    <div class="hanoi-video-grid">
-      <div class="video-cell">
-        <video src="videos/hanoi/rollout_1.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">Rollout 1</p>
-      </div>
-      <div class="video-cell">
-        <video src="videos/hanoi/rollout_2.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">Rollout 2</p>
-      </div>
-      <div class="video-cell">
-        <video src="videos/hanoi/rollout_3.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">Rollout 3</p>
-      </div>
-      <div class="video-cell">
-        <video src="videos/hanoi/rollout_4.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">Rollout 4</p>
-      </div>
-      <div class="video-cell">
-        <video src="videos/hanoi/rollout_5.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">Rollout 5</p>
-      </div>
-      <div class="video-cell">
-        <video src="videos/hanoi/rollout_6.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">Rollout 6</p>
-      </div>
-    </div>
-
-    <hr class="result-divider">
-
-    <h3 class="title is-4 has-text-centered subsection-title">Hyperparameter Sensitivity</h3>
-    <div class="content has-text-justified">
-      <p>
-        We evaluate sensitivity by setting \(\lambda\) to 0.3 or 0.7 and increasing the negative-buffer
-        capacity to 512. Across <code>Stack_Three</code>, <code>Tool_Hang</code>, and
-        <code>Three_Piece_Assembly</code>, all variants yield comparable performance, demonstrating that HiRE
-        is broadly insensitive to these hyperparameters. Only the high-precision <code>Threading</code> task
-        shows notable sensitivity: a larger buffer retains outdated failures and weakens the focus on current
-        traps, while a smaller \(\lambda\) provides insufficient repulsion when the failure distribution is broad.
-        Both observations are consistent with HiRE's design.
-      </p>
-      <p>
-        <strong>Generality to RL algorithms.</strong>
-        DICE-RL provides a representative testbed for evaluating the reward recipe: it combines the stability
-        of distillation, the efficiency of steering, and the flexibility of correction, drawing strengths from
-        different mainstream robotic policy-finetuning paradigms. HiRE remains algorithm-agnostic at the reward
-        interface because it edits the reward independently of the policy-finetuning backbone.
-      </p>
-    </div>
-
-    <div class="figure-block">
-      <img src="images/hyperparameter_sensitivity.png" alt="Sensitivity to repulsion weight and negative-buffer capacity on four simulation tasks" class="paper-figure">
-      <p class="figure-caption">
-        <strong>Hyperparameter sensitivity.</strong>
-        Performance under two repulsion weights and an enlarged negative buffer, compared with the original HiRE configuration.
-      </p>
-    </div>
-
-    <hr class="result-divider">
-
-    <h3 class="title is-4 subsection-title has-text-centered">Updated Real-Robot Evaluation</h3>
-    <div class="figure-block">
-      <img src="images/pick_place_success_curve.png" alt="Success rate during online finetuning on the bottle pick-and-place task" class="paper-figure compact-plot">
-      <p class="figure-caption">
-        <strong>Bottle pick-and-place success rate.</strong>
-        HiRE improves from the 20% base policy to 66.7%, whereas sparse-reward and RoboMeter finetuning fail to improve the policy.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- Method Overview -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered section-title">Method</h2>
-
-    <div class="content has-text-justified">
-      <p>
-        Following maximum-entropy inverse RL, the ideal control-aware reward is the
-        <strong>log-density ratio between success and failure states</strong>:
-      </p>
-      <p>
-        \[ R^*(s) = \log p_{+}(s) - \log p_{-}(s) \]
-      </p>
-      <p>
-        Instead of training a discriminator, HiRE estimates both densities <em>non-parametrically</em>
-        in a frozen foundation representation space (e.g. DINOv2, SigLIP), using von Mises&ndash;Fisher kernel
-        density estimation over a <strong>positive buffer</strong> \(\mathcal{B}^+\) (successful rollouts and expert frames)
-        and a <strong>negative buffer</strong> \(\mathcal{B}^-\) (terminal frames of failed rollouts) collected during finetuning.
-        This yields a closed-form, training-free potential:
-      </p>
-      <p>
-        \[ \Phi_{\text{HiRE}}(s) = \mathbb{L}^{\kappa^+}_{\mathcal{B}^+}\!\left(\text{sim}_\phi(s, g^+)\right)
-        \;-\; \lambda \cdot \mathbb{L}^{\kappa^-}_{\mathcal{B}^-}\!\left(\text{sim}_\phi(s, g^-)\right),
-        \qquad \mathbb{L}^{\kappa}_{\mathcal{B}}(X) := \tfrac{1}{\kappa}\log \mathbb{E}_{\mathcal{B}}\left[e^{\kappa X}\right] \]
-      </p>
-      <p>
-        where \(\text{sim}_\phi\) is cosine similarity in the representation space and
-        \(\lambda = \kappa^-/\kappa^+ \in [0,1)\) balances the two manifolds.
-        This subtractive structure partitions the representation space into three regimes.
-        In the <strong>success-dominated regime</strong>, HiRE elevates dynamically correct states that appear
-        visually distant from the goal, rescuing false negatives.
-        In the <strong>failure-dominated regime</strong>, it imposes a severe penalty on deceptive trap states
-        that look like the goal but have suffered irreversible failures, suppressing visual reward hacking.
-        In the <strong>equilibrium regime</strong>, the two gradients cancel and the landscape flattens,
-        so HiRE gracefully degrades to the clean sparse-reward recipe on under-covered states.
-        The potential is integrated with the sparse task success signal via
-        <strong>potential-based reward shaping</strong>:
-      </p>
-      <p>
-        \[ R_{\text{HiRE}}(s,a,s') = R_{\text{sparse}}(s,a,s') + w\left(\gamma\,\Phi_{\text{HiRE}}(s') - \Phi_{\text{HiRE}}(s)\right) \]
-      </p>
-      <p>
-        which provides dense guidance while provably preserving the optimal policy for task completion.
-        The whole recipe requires no reward-model training or human labels, and is compatible with any RL finetuning backbone.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- Simulation Results -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered section-title">Simulation Results</h2>
-
-    <div class="content has-text-justified">
-      <p>
-        We evaluate HiRE on four RoboMimic and MimicGen tasks
-        (<code>Stack_Three</code>, <code>Threading</code>, <code>Tool_Hang</code>, <code>Three_Piece_Assembly</code>),
-        comparing against sparse reward and RoboMeter under the same DICE-RL finetuning backbone.
-        The base policies exhibit non-zero but limited competence (1&ndash;18% success),
-        an intentionally challenging setting that tests whether each reward signal can guide
-        finetuning beyond the initial policy.
-      </p>
-      <p>
-        HiRE improves online finetuning in two complementary regimes.
-        On long-horizon, multi-stage tasks where sparse rewards provide limited credit assignment,
-        it lifts the final success rate substantially: roughly 50% vs. low-30% on <code>Stack_Three</code>,
-        and 75&ndash;80% vs. 60% on <code>Three_Piece_Assembly</code>.
-        On contact-rich, high-precision tasks, sparse-reward finetuning remains near zero on <code>Tool_Hang</code>
-        while HiRE steadily improves to around 60%, and on <code>Threading</code> HiRE reaches the same final
-        success with markedly fewer online interactions.
-        In contrast, the general-purpose reward model RoboMeter stays close to zero or improves only marginally,
-        suggesting its reward signals do not generalize well to these unseen scenarios.
-      </p>
-    </div>
-
-    <div class="figure-block">
-      <img src="images/combined_4tasks.png" alt="Comparisons on RoboMimic and MimicGen tasks" class="paper-figure">
-      <p class="figure-caption">
-        <strong>Comparisons on RoboMimic and MimicGen tasks.</strong>
-        Success rate versus online environment steps, averaged over 3 seeds.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<!-- Visualization & Analyses -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered section-title">Visualization &amp; Analyses</h2>
-
-    <h3 class="title is-4 has-text-centered subsection-title">Reward Landscape</h3>
-    <div class="content has-text-justified">
-      <p>
-        We compare the raw DINO goal-similarity potential against the HiRE potential along representative trajectories.
-        When the robot correctly approaches the target early in execution, the observation is visually distinct
-        from the goal frame, so the raw potential severely degrades (a <em>false negative</em>).
-        Conversely, when the robot loses the target and leaves the camera view, the raw potential deceptively
-        increases, falsely interpreting the empty background as a closer match to the goal (a <em>false positive</em>).
-        By attracting toward the success manifold and repelling from the failure manifold,
-        HiRE unmasks these visual illusions and stays faithful to true task progress.
-      </p>
-    </div>
-    <div class="figure-block">
-      <img src="images/segment_focused_viz.png" alt="HiRE reward captures task progress beyond goal-frame visual similarity" class="paper-figure">
-      <p class="figure-caption">
-        <strong>HiRE reward captures task progress beyond goal-frame visual similarity.</strong>
-        Reward scores along representative trajectories; shaded regions mark key behavioral phases.
-      </p>
-    </div>
-
-    <h3 class="title is-4 has-text-centered subsection-title">Buffer Dynamics</h3>
-    <div class="content has-text-justified">
-      <p>
-        Analyzing the joint t-SNE embedding of buffer samples across training reveals two insights.
-        First, the negative buffer dynamically captures stage-progressive failure modes:
-        early on it concentrates around the initial state, and as the policy improves it purges these trivial
-        failures and segments into localized clusters of hard, late-stage failures near the goal,
-        avoiding global over-penalization.
-        Second, the positive distribution remains highly concentrated while the negative one is wide and scattered,
-        empirically supporting the asymmetric concentration \(\kappa^+ > \kappa^-\) used in HiRE.
-      </p>
-    </div>
-    <div class="figure-block">
-      <img src="images/selected_steps_combined.png" alt="Buffer samples in shared t-SNE space across training steps" class="paper-figure">
-      <p class="figure-caption">
-        <strong>Negative-buffer structure captures distinct failure states during reward learning.</strong>
-        Positive and negative buffer samples in a shared t-SNE space across training steps.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- Real Robot Results -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered section-title">Real Robot Results</h2>
-
-    <div class="content has-text-justified">
-      <p>
-        We evaluate HiRE on a 6-DoF YAM arm on a pick-and-place task: localize a bottle, grasp it reliably,
-        transport it to a target plate, and release it accurately.
-        The deformable bottle and paper plate demand compliant, coarse-to-fine control,
-        and policies are evaluated across six initial bottle positions spanning a wide tabletop workspace.
-        Starting from a diffusion policy trained on 117 teleoperated demonstrations and finetuned with DICE-RL,
-        HiRE steadily boosts the success rate from <strong>20% to 66.7%</strong> within 70 online episodes,
-        whereas the sparse-reward baseline fails entirely.
-        The sparse critic loss collapses prematurely for lack of feedback,
-        while HiRE sustains non-trivial critic updates throughout finetuning.
-      </p>
-    </div>
-
-    <div class="figure-block">
-      <img src="images/panel_curve_combined.png" alt="Real-robot evaluation on the pick-and-place task" class="paper-figure">
-      <p class="figure-caption">
-        <strong>Real-robot evaluation on the pick-and-place task.</strong>
-        Left: a typical failure (top) vs. HiRE (bottom). Right: success rate vs. online finetuning episodes.
-      </p>
-    </div>
-
-    <div class="figure-block">
-      <img src="images/row_concat_cropped.png" alt="Six fixed initial bottle positions used for real-robot evaluation" class="paper-figure">
-      <p class="figure-caption">
-        <strong>6 initial bottle positions (P1&ndash;P6) used for evaluation</strong>, spanning a wide tabletop workspace.
-      </p>
-    </div>
-    <div class="content has-text-justified">
-      <p>
-        Successful rollouts of each position are demonstrated below:
-      </p>
-    </div>
-    <div class="video-grid">
-      <div class="video-cell">
-        <video src="videos/success/success_3.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">P1</p>
-      </div>
-      <div class="video-cell">
-        <video src="videos/success/success_5.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">P2</p>
-      </div>
-      <div class="video-cell">
-        <video src="videos/success/success_4.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">P3</p>
-      </div>
-      <div class="video-cell">
-        <video src="videos/success/success_6.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">P4</p>
-      </div>
-      <div class="video-cell">
-        <video src="videos/success/success_2.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">P5</p>
-      </div>
-      <div class="video-cell">
-        <video src="videos/success/success_1.mp4" autoplay loop muted playsinline></video>
-        <p class="video-label">P6</p>
-      </div>
-    </div>
-
-    <h3 class="title is-4 subsection-title has-text-centered">Emergent Behaviors during Deployment</h3>
-
-    <div class="content has-text-justified">
-      <p>
-        In challenging cases where the bottle is displaced into out-of-distribution (OOD) states or the gripper makes
-        unintended contact of bottle with the plate edge, the policy adaptively corrects its behavior, generating
-        emergent recovery behaviors that did not appear in the expert demonstrations and ultimately achieving success.
-        These rapid recoveries demonstrate the strong robustness conferred by online RL finetuning with HiRE reward recipe.
-      </p>
-    </div>
-
-    <div class="video-grid">
-      <video src="videos/emergent/emergent_1.mp4" autoplay loop muted playsinline></video>
-      <video src="videos/emergent/emergent_2.mp4" autoplay loop muted playsinline></video>
-      <video src="videos/emergent/emergent_3.mp4" autoplay loop muted playsinline></video>
-      <video src="videos/emergent/emergent_4.mp4" autoplay loop muted playsinline></video>
-      <video src="videos/emergent/emergent_5.mp4" autoplay loop muted playsinline></video>
-      <video src="videos/emergent/emergent_6.mp4" autoplay loop muted playsinline></video>
-    </div>
-
-  </div>
-</section>
-
-<!-- Ablations -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered section-title">Ablations</h2>
-
-    <div class="content has-text-justified">
-      <p>
-        We ablate three design choices of HiRE:
-        the <strong>foundation representation</strong>, swapping the encoder to test representation-agnosticity;
-        the <strong>reward composition</strong>, removing either the PBRS integration or the hindsight editing to isolate each mechanism;
-        and the <strong>buffer design</strong>, disabling the negative buffer to measure how much the
-        failure-dominated correction contributes on top of the success-dominated attraction.
-      </p>
-      <p>
-        <strong>Foundation representation and reward composition.</strong>
-        Replacing DINOv2 with SigLIP leaves the rest of the reward pipeline unchanged, and both encoders
-        scaffold HiRE to improve policies, with DINOv2 performing slightly better.
-        For reward composition, the full HiRE reward achieves the highest success rate.
-        Removing PBRS (adding the potential directly to the sparse reward) lowers the final performance,
-        indicating that the temporal-difference shaping helps stabilize optimization.
-        The raw goal-similarity baseline lags far behind both variants:
-        even without the policy-invariance guarantee of PBRS, the edited potential still provides
-        a substantially more informative learning signal than raw visual similarity.
-      </p>
-    </div>
-
-    <div class="figure-block">
-      <img src="images/ablation_stack_three.png" alt="Representation and reward-composition ablations on Stack Three" class="paper-figure" style="max-width: 80%;">
-      <p class="figure-caption">
-        <strong>Representation and reward-composition ablations on <code>Stack_Three</code>.</strong>
-        (a) DINOv2 vs. SigLIP encoders. (b) Full HiRE vs. without PBRS vs. raw similarity.
-      </p>
-    </div>
-
-    <div class="content has-text-justified">
-      <p>
-        <strong>Buffer design.</strong>
-        The positive-buffer-only variant remains competitive, confirming that success-manifold attraction
-        is the main source of dense guidance. However, the full contrastive reward is stronger overall,
-        with the clearest gain on <code>Tool_Hang</code>: this contact-rich, high-precision task produces many
-        near-goal failures that appear visually successful, exactly the false-positive traps that attraction
-        alone cannot distinguish but repulsion from the negative buffer can suppress.
-        On the easier <code>Stack_Three</code>, the two variants are close,
-        suggesting that the value of the negative buffer grows with task difficulty
-        and the prevalence of visually deceptive failures.
-      </p>
-    </div>
-
-    <div class="figure-block">
-      <img src="images/ablation_buffer.png" alt="Buffer-design ablations on Stack Three and Tool Hang" class="paper-figure" style="max-width: 80%;">
-      <p class="figure-caption">
-        <strong>Buffer-design ablations on <code>Stack_Three</code> and <code>Tool_Hang</code>.</strong>
-        Full HiRE vs. positive-buffer-only.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<!-- Citation -->
-<!-- <section class="section" style="padding-bottom: 0;">
-  <div class="container is-max-desktop">
-    <div style="background-color: #f5f5f5; border-radius: 10px; padding: 30px; border-left: 4px solid #2E6F95;">
-      <h2 class="title is-4 has-text-centered hire-accent" style="margin-bottom: 20px;">Citation</h2>
-      <pre style="background-color: #e8e8e8; color: #333; padding: 20px; border-radius: 8px; overflow-x: auto; font-size: 0.85rem;"><code>@inproceedings{hire2026,
-  title={HiRE: Hindsight Reward Editing for Policy Finetuning},
-  author={Anonymous},
-  booktitle={Conference on Robot Learning (CoRL)},
-  year={2026}
+  </div></section>
+  <section class="section" id="analysis" aria-labelledby="analysis-title"><div class="container">
+    <h2 id="analysis-title">Understanding HiRE</h2>
+    <h3>Correcting misleading visual rewards</h3>
+    <p class="prose">In the <code class="task-name">Threading</code> example, correctly approaching the target initially makes the observation look less like the final goal, so raw DINO similarity decreases. Later, the robot loses its target and leaves the camera view, yet the raw score rises as the background resembles the goal frame. HiRE corrects these false negatives and false positives: successful histories reinforce the useful approach, while failure evidence penalizes the visually plausible trap. The edited potential follows task progress more faithfully than goal-frame resemblance alone.</p>
+    <figure class="paper-figure "><a href="images/segment_focused_viz.png" target="_blank" rel="noopener" aria-label="Open full-size figure: Raw goal similarity and HiRE potentials along Threading and Stack Three trajectories"><img src="images/segment_focused_viz.png" width="4468" height="2683" alt="Raw goal similarity and HiRE potentials along Threading and Stack Three trajectories" loading="lazy" decoding="async"></a><figcaption>Reward landscapes on <code class="task-name">Threading</code> and <code class="task-name">Stack_Three</code>. Raw goal similarity and HiRE potentials along representative trajectories.</figcaption></figure>
+    <h3>Adapting to harder failure modes</h3>
+    <p class="prose">The negative buffer initially concentrates around early failures near the starting state. As the policy improves, older samples are replaced by localized, later-stage failure modes near the goal. This keeps reward correction focused on current traps. The joint t-SNE visualization also shows a compact success distribution and a broader failure distribution, supporting HiRE’s asymmetric kernels: sharp attraction toward success and broader repulsion from failure.</p>
+    <figure class="paper-figure "><a href="images/buffer_dynamics.png" target="_blank" rel="noopener" aria-label="Open full-size figure: Positive and negative buffer samples in a shared t-SNE embedding across training"><img src="images/buffer_dynamics.png" width="2600" height="996" alt="Positive and negative buffer samples in a shared t-SNE embedding across training" loading="lazy" decoding="async"></a><figcaption>Buffer dynamics in a shared t-SNE space. Positive and negative buffer samples across training reveal how the negative buffer shifts toward harder failure states.</figcaption></figure><div class="ablation-block"><h3>Ablations and training dynamics</h3><div class="analysis-tabs" role="group" aria-label="Choose an analysis" hidden><button type="button" data-analysis="analysis-0" aria-pressed="true" aria-controls="analysis-0">Encoder</button><button type="button" data-analysis="analysis-1" aria-pressed="false" aria-controls="analysis-1">Hyperparameters</button><button type="button" data-analysis="analysis-2" aria-pressed="false" aria-controls="analysis-2">Reward composition</button><button type="button" data-analysis="analysis-3" aria-pressed="false" aria-controls="analysis-3">Buffers</button><button type="button" data-analysis="analysis-4" aria-pressed="false" aria-controls="analysis-4">Critic updates</button></div><div class="analysis-panel" id="analysis-0" role="region" aria-label="Foundation representations"><h4>Foundation representations</h4><p>Both DINOv2 and SigLIP provide useful dense guidance across all four tasks. Replacing the frozen encoder leaves the hindsight-editing recipe intact. DINOv2 achieves higher success rates overall; SigLIP is closer on <code class="task-name">Tool_Hang</code> and <code class="task-name">Three_Piece_Assembly</code>, but learns more slowly on <code class="task-name">Stack_Three</code> and especially <code class="task-name">Threading</code>. The recipe transfers across representations, while encoder choice still affects efficiency and reliability.</p><figure class="paper-figure "><a href="images/foundation_encoder_ablation.png" target="_blank" rel="noopener" aria-label="Open full-size figure: DINOv2 and SigLIP encoder ablations across four tasks"><img src="images/foundation_encoder_ablation.png" width="2600" height="729" alt="DINOv2 and SigLIP encoder ablations across four tasks" loading="lazy" decoding="async"></a><figcaption>Encoder ablation. HiRE with frozen DINOv2 and SigLIP representations.</figcaption></figure></div><div class="analysis-panel" id="analysis-1" role="region" aria-label="Hyperparameter sensitivity"><h4>Hyperparameter sensitivity</h4><p>HiRE is broadly insensitive to hyperparameter choices. We vary the contrastive weight λ across {0.1, 0.3, 0.7, 0.9} and test a negative-buffer capacity of 512. The variants perform similarly on <code class="task-name">Stack_Three</code>, and every configuration substantially improves <code class="task-name">Three_Piece_Assembly</code>, with some differences in learning speed and final success. HiRE therefore retains effective learning across a broad range of settings.</p><p>Precision-critical tasks show more task-dependent behavior. On <code class="task-name">Threading</code>, reducing λ or enlarging the buffer slows improvement, consistent with weaker repulsion or retention of outdated failures. On <code class="task-name">Tool_Hang</code>, λ = 0.1 and 0.3 provide stronger guidance, whereas λ = 0.9 fails to sustain improvement. Together, these results support broad parameter insensitivity on multi-stage tasks while showing the value of appropriate failure correction for precision manipulation.</p><figure class="paper-figure "><a href="images/hyperparameter_ablation.png" target="_blank" rel="noopener" aria-label="Open full-size figure: Contrastive weights and negative-buffer capacity across four simulation tasks"><img src="images/hyperparameter_ablation.png" width="3014" height="848" alt="Contrastive weights and negative-buffer capacity across four simulation tasks" loading="lazy" decoding="async"></a><figcaption>Hyperparameter sensitivity. HiRE retains effective learning across a broad range of settings on multi-stage tasks; precision-critical tasks show task-dependent preferences.</figcaption></figure></div><div class="analysis-panel" id="analysis-2" role="region" aria-label="Reward composition"><h4>Reward composition</h4><p>Hindsight editing and potential-based shaping work best together. On <code class="task-name">Stack_Three</code>, full HiRE learns faster and reaches higher success than directly adding the edited potential or raw goal similarity. On <code class="task-name">Tool_Hang</code>, both alternatives remain near zero while full HiRE continues to improve. The edited potential still outperforms raw similarity on <code class="task-name">Stack_Three</code>, indicating that hindsight correction is useful even without temporal-difference shaping.</p><p class="small-note"></p><figure class="paper-figure "><a href="images/reward_composition.png" target="_blank" rel="noopener" aria-label="Open full-size figure: Full HiRE compared with no PBRS and raw similarity on Stack Three and Tool Hang"><img src="images/reward_composition.png" width="2600" height="975" alt="Full HiRE compared with no PBRS and raw similarity on Stack Three and Tool Hang" loading="lazy" decoding="async"></a><figcaption>Reward composition. Combining hindsight editing with potential-based shaping gives the strongest results among the compared configurations.</figcaption></figure></div><div class="analysis-panel" id="analysis-3" role="region" aria-label="Success and failure buffers"><h4>Success and failure buffers</h4><p>Failure awareness is most valuable when near-goal failures look successful. On <code class="task-name">Stack_Three</code>, the positive-only variant closely tracks full HiRE and finishes slightly higher. On <code class="task-name">Tool_Hang</code>, full HiRE learns faster and reaches above 90%, while the positive-only variant improves more slowly and plateaus lower. Success attraction supplies useful guidance, but the negative buffer adds the correction needed to distinguish deceptive failures in precision manipulation.</p><figure class="paper-figure "><a href="images/ablation_buffer_final.png" target="_blank" rel="noopener" aria-label="Open full-size figure: Full HiRE versus positive-buffer-only rewards on Stack Three and Tool Hang"><img src="images/ablation_buffer_final.png" width="2600" height="837" alt="Full HiRE versus positive-buffer-only rewards on Stack Three and Tool Hang" loading="lazy" decoding="async"></a><figcaption>Buffer design. Failure awareness is especially useful for contact-rich, high-precision manipulation.</figcaption></figure></div><div class="analysis-panel" id="analysis-4" role="region" aria-label="Critic feedback on the real robot"><h4>Critic feedback on the real robot</h4><p>Dense, outcome-grounded rewards sustain informative critic updates. During <code class="task-name">Bottle_Pick-and-Place</code> finetuning, sparse rewards produce prematurely low critic loss alongside failed policy improvement, while RoboMeter’s loss does not converge. HiRE maintains non-trivial critic updates as success increases. The paper interprets this contrast as evidence that hindsight editing supplies useful learning signals when sparse feedback is insufficient.</p><figure class="paper-figure compact"><a href="images/critic_loss_final.jpg" target="_blank" rel="noopener" aria-label="Open full-size figure: Critic losses for HiRE, sparse reward and RoboMeter"><img src="images/critic_loss_final.jpg" width="2090" height="1189" alt="Critic losses for HiRE, sparse reward and RoboMeter" loading="lazy" decoding="async"></a><figcaption>Critic loss during <code class="task-name">Bottle_Pick-and-Place</code> finetuning. HiRE maintains non-trivial updates, compared with prematurely low loss under sparse rewards and non-converged loss under RoboMeter.</figcaption></figure></div></div>
+  </div></section>
+  <section class="section" id="citation" aria-labelledby="citation-title"><div class="container reading">
+    <div class="citation-heading"><div><h2 id="citation-title">BibTeX</h2></div><button class="button" id="copy-citation" type="button" hidden>Copy BibTeX</button></div>
+    <pre><code id="bibtex">@misc{niu2026hire,
+  title  = {HiRE: Hindsight Reward Editing for Policy Finetuning},
+  author = {Niu, Haoyi and Han, Zhengtao and Ji, Yufeng and
+            Li, Zhongyu and Sreenath, Koushil},
+  year   = {2026},
+  url    = {https://hire-project.github.io/}
 }</code></pre>
-    </div>
-  </div>
-</section> -->
-
-<!-- Contact -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="has-text-centered" style="padding: 20px;">
-      <h2 class="title is-5" style="color: #222; margin-bottom: 10px;">Contact</h2>
-      <p style="color: #555; font-size: 0.95rem;">
-        Questions? Please contact us at <a href="mailto:email@example.com" class="hire-accent">email@example.com</a>.
-      </p>
-    </div>
-  </div>
-</section>
-
+    <div class="citation-footer"><span id="copy-status" role="status" aria-live="polite"></span></div>
+  </div></section>
+</main>
+<footer><div class="container reading">
+  <p>Website style inspired by <a href="https://nerfies.github.io/">Nerfies</a>.</p>
+</div></footer>
 </body>
 </html>
