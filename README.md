@@ -1,4 +1,4 @@
-# HiRE project website
+# HiRE: Hindsight Reward Editing for Policy Finetuning
 
 Simple academic project page, styled after [Nerfies](https://nerfies.github.io/), for **HiRE: Hindsight Reward Editing for Policy Finetuning**. Open `index.html` directly, or preview with:
 
