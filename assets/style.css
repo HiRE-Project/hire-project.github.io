@@ -1,5 +1,6 @@
 /* A simple academic project page, inspired by https://nerfies.github.io/. */
 :root {
+  --content-width: 840px;
   --text: #4a4a4a;
   --heading: #363636;
   --link: #209cee;
@@ -32,8 +33,8 @@ a:focus-visible, button:focus-visible, video:focus-visible {
   outline-offset: 4px;
 }
 [hidden] { display: none !important; }
-.container { width: min(960px, calc(100% - 48px)); margin-inline: auto; }
-.reading, .prose { max-width: 840px; margin-inline: auto; }
+.container { width: min(var(--content-width), calc(100% - 48px)); margin-inline: auto; }
+.reading, .prose { max-width: var(--content-width); margin-inline: auto; }
 .section { padding: 32px 0; }
 .hero { padding-top: 48px; padding-bottom: 24px; text-align: center; }
 .title-second { font-size: 1em; }
@@ -80,7 +81,6 @@ a:focus-visible, button:focus-visible, video:focus-visible {
 .paper-figure { margin: 28px 0 34px; }
 .paper-figure img { width: 100%; }
 .paper-figure figcaption { margin-top: 12px; font-size: 14px; text-align: center; }
-.paper-figure.compact { max-width: 620px; margin-inline: auto; }
 .citation-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .citation-heading h2 { text-align: left; margin-bottom: 0; }
 #copy-citation { background: #f1f1f1; color: var(--text); font-size: 13px; }
@@ -121,7 +121,7 @@ footer p + p { margin-top: 8px; }
 }
 
 /* Demonstrations keep the source aspect ratio and a single centered caption. */
-.showcase { margin: 32px auto 0; max-width: 840px; }
+.showcase { margin: 32px auto 0; max-width: var(--content-width); }
 .demo-tabs, .analysis-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 24px; border-bottom: 1px solid #e5e5e5; }
 .demo-tabs button, .analysis-tabs button { border: 0; border-bottom: 2px solid transparent; padding: 10px 2px; background: none; color: #777; font-size: 14px; cursor: pointer; }
 .demo-tabs button[aria-pressed="true"], .analysis-tabs button[aria-pressed="true"] { color: #363636; border-bottom-color: #363636; font-weight: 600; }
@@ -137,12 +137,12 @@ footer p + p { margin-top: 8px; }
 .clip-arrow { font-size: 25px; }
 .demo-clips button:hover, .clip-arrow:hover { color: #222; }
 #demo-status { margin-top: 6px; text-align: center; font-size: 11px; color: #888; }
-#experiments h3, #analysis h3 { max-width: 840px; margin-inline: auto; margin-top: 30px; }
-.paper-figure figcaption { max-width: 840px; margin-inline: auto; font-size: 13px; color: #666; }
+#experiments h3, #analysis h3 { max-width: var(--content-width); margin-inline: auto; margin-top: 30px; }
+.paper-figure figcaption { max-width: var(--content-width); margin-inline: auto; font-size: 13px; color: #666; }
 .ablation-block { margin-top: 32px; }
-.analysis-tabs { justify-content: flex-start; margin: 0 auto 22px; max-width: 840px; gap: 4px 20px; }
-.analysis-panel h4 { max-width: 840px; margin: 0 auto 12px; font-size: 17px; font-weight: 600; }
-.analysis-panel > p { max-width: 840px; margin-inline: auto; }
+.analysis-tabs { justify-content: flex-start; margin: 0 auto 22px; max-width: var(--content-width); gap: 4px 20px; }
+.analysis-panel h4 { max-width: var(--content-width); margin: 0 auto 12px; font-size: 17px; font-weight: 600; }
+.analysis-panel > p { max-width: var(--content-width); margin-inline: auto; }
 .analysis-panel .paper-figure { margin-bottom: 0; }
 .equation-panel { color: #333; font-size: 18px; }
 .equation-panel .katex-display { margin: 0; }
