@@ -16,9 +16,9 @@ The main comparison, encoder, reward-composition, buffer-design, and buffer-dyna
 
 ## Publication links
 
-Paper and Code intentionally remain non-clickable **Coming soon** placeholders, as requested. When public URLs are available, replace the relevant spans in `index.html` with links. No paper PDF is bundled.
+The Paper and Code buttons link to the [arXiv preprint](https://arxiv.org/abs/2609.27068) and the [HiRE source repository](https://github.com/HiRE-Project/HiRE). No paper PDF is bundled.
 
-`assets/hire.bib` and the citation block in `index.html` use an `@misc` entry with the project URL until publication metadata is supplied. Update both together. The website does not claim a publication venue or acceptance status.
+`assets/hire.bib` and the citation block in `index.html` contain matching BibTeX entries with the arXiv identifier and CoRL 2026 venue noted on the arXiv page. Update both together when citation metadata changes.
 
 ## Presentation and behavior
 
