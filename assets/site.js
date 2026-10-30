@@ -91,3 +91,18 @@ if ('IntersectionObserver' in window) {
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) player.pause();
 });
+
+// The teaser pauses when scrolled out of view or when the tab is hidden, and the demo player stops when it starts.
+const teaser = document.getElementById('teaser-video');
+if (teaser) {
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) teaser.pause();
+    }, { threshold: 0.05 }).observe(teaser);
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) teaser.pause();
+  });
+  teaser.addEventListener('play', () => player.pause());
+  player.addEventListener('play', () => teaser.pause());
+}

@@ -1,6 +1,6 @@
 # HiRE: Hindsight Reward Editing for Policy Finetuning
 
-Simple academic project page, styled after [Nerfies](https://nerfies.github.io/), for **HiRE: Hindsight Reward Editing for Policy Finetuning**. Open `index.html` directly, or preview with:
+Academic project page for **HiRE: Hindsight Reward Editing for Policy Finetuning**. The layout was originally based on [Nerfies](https://nerfies.github.io/); the visual style now matches the teaser video. Open `index.html` directly, or preview with:
 
 ```sh
 python3 -m http.server 8765 --bind 127.0.0.1
@@ -19,6 +19,14 @@ The main comparison, encoder, reward-composition, buffer-design, and buffer-dyna
 The Paper and Code buttons link to the [arXiv preprint](https://arxiv.org/abs/2609.27068) and the [HiRE source repository](https://github.com/HiRE-Project/HiRE). No paper PDF is bundled.
 
 `assets/hire.bib` and the citation block in `index.html` contain matching BibTeX entries with the arXiv identifier and CoRL 2026 venue noted on the arXiv page. Update both together when citation metadata changes.
+
+## Teaser video
+
+`videos/teaser/hire_teaser.mp4` is the 1.5-minute teaser (1920×1080, H.264, no audio, `faststart` for streaming), shown under the title with `images/posters/teaser.jpg` as its cover frame. It pauses when scrolled out of view, and the teaser and the demonstration player never play at the same time.
+
+## Visual style
+
+The page uses the teaser's light style: a warm white page (`#fbfbf9`), Inter, slate-blue accent (`#2e4e84`), sage for success (`#3a7c5e`) and terracotta for failure (`#b8523e`), flush-left section headings with small uppercase labels, plain display equations, and white cards for figures. Everything (text, equations, figures, videos) shares one centered 800 px column. All colors are CSS variables at the top of `assets/style.css`. Inter is served locally from `assets/fonts/InterVariable.woff2` (SIL Open Font License, see `assets/fonts/LICENSE-Inter.txt`), so the page still needs no external CDN.
 
 ## Presentation and behavior
 
