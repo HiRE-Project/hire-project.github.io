@@ -1,5 +1,5 @@
 /* HiRE project page. Visual language matches the teaser video: warm white page, Inter, slate-blue accent,
-   sage for success and terracotta for failure, flush-left headings and soft white cards. */
+   blue for success and terracotta for failure, flush-left headings and soft white cards. */
 @font-face {
   font-family: "Inter";
   src: url("fonts/InterVariable.woff2") format("woff2");
@@ -19,7 +19,7 @@
   --accent: #2e4e84;
   --accent-dark: #233d68;
   --accent-soft: #e9edf4;
-  --success: #3a7c5e;
+  --success: #24749c;
   --failure: #b8523e;
   --radius: 18px;
   --shadow: 0 1px 2px rgba(20, 25, 40, .05), 0 8px 28px rgba(20, 25, 40, .07);
