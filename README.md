@@ -26,7 +26,7 @@ The Paper and Code buttons link to the [arXiv preprint](https://arxiv.org/abs/26
 
 ## Visual style
 
-The page uses the teaser's light style: a warm white page (`#fbfbf9`), Inter, slate-blue accent (`#2e4e84`), blue for success (`#24749c`) and terracotta for failure (`#b8523e`), flush-left section headings with small uppercase labels, plain display equations, and white cards for figures. Everything (text, equations, figures, videos) shares one centered 800 px column. All colors are CSS variables at the top of `assets/style.css`. Inter is served locally from `assets/fonts/InterVariable.woff2` (SIL Open Font License, see `assets/fonts/LICENSE-Inter.txt`), so the page still needs no external CDN.
+The page uses the teaser's light style: a warm white page (`#fbfbf9`), Inter, slate-blue accent (`#2e4e84`, also used for success, so the page and the teaser share one blue) and terracotta for failure (`#b8523e`), flush-left section headings with small uppercase labels, plain display equations, and white cards for figures. Everything (text, equations, figures, videos) shares one centered 800 px column. All colors are CSS variables at the top of `assets/style.css`. Inter is served locally from `assets/fonts/InterVariable.woff2` (SIL Open Font License, see `assets/fonts/LICENSE-Inter.txt`), so the page still needs no external CDN.
 
 ## Presentation and behavior
 
