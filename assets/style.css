@@ -284,3 +284,35 @@ code.task-name {
   .paper-figure { break-inside: avoid; box-shadow: none; border: 1px solid var(--hair); }
   .showcase, .analysis-tabs, .teaser { display: none; }
 }
+/* ---- reward-recipe table (motivation) ------------------------------------------------------------ */
+.recipe-figure { padding: 8px 22px 18px; }
+.table-scroll { overflow-x: auto; }
+.recipe-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 15px; line-height: 1.35; }
+.recipe-table th, .recipe-table td { padding: 13px 8px; border-bottom: 1px solid var(--hair); }
+.recipe-table thead th { color: var(--muted); font-size: 13px; font-weight: 600; text-align: center; vertical-align: bottom; }
+.recipe-table thead th:first-child, .recipe-table tbody th { text-align: left; }
+.recipe-table tbody th { color: var(--ink); font-weight: 600; }
+.recipe-table td { width: 15%; text-align: center; }
+.recipe-table .eg { color: var(--muted); font-size: 13px; font-weight: 400; white-space: nowrap; }
+.recipe-table .hire-row th, .recipe-table .hire-row td { border-bottom: 0; background: var(--accent-soft); }
+.recipe-table .hire-row th { color: var(--accent); font-weight: 750; border-radius: 10px 0 0 10px; }
+.recipe-table .hire-row td:last-child { border-radius: 0 10px 10px 0; }
+.recipe-table tbody tr:nth-last-child(2) > * { border-bottom: 0; }
+.mark { display: inline-flex; width: 22px; height: 22px; vertical-align: middle; }
+.mark svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.mark.yes { color: var(--success); }
+.mark.no { color: var(--failure); }
+.mark.solid { width: 26px; height: 26px; padding: 5px; border-radius: 50%; background: var(--accent); color: #fff; }
+.recipe-question { margin-top: 4px; color: var(--text); font-size: 19px; line-height: 1.6; }
+.recipe-question strong { font-weight: 650; }
+.recipe-question .accent { color: var(--accent); white-space: nowrap; }
+@media (max-width: 480px) {
+  .recipe-figure { padding: 4px 8px 12px; }
+  .recipe-table { font-size: 13px; }
+  .recipe-table th, .recipe-table td { padding: 10px 4px; }
+  .recipe-table thead th { font-size: 11px; }
+  .recipe-table .eg { display: block; font-size: 11px; white-space: normal; }
+  .mark { width: 18px; height: 18px; }
+  .mark.solid { width: 22px; height: 22px; padding: 4px; }
+  .recipe-question { font-size: 16px; }
+}

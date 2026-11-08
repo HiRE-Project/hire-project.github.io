@@ -35,6 +35,7 @@ The page uses the teaser's light style: a warm white page (`#fbfbf9`), Inter, sl
 - The video player uses native playback controls, local posters, and metadata-only preload.
 - Full-resolution figures open when selected. A task selector groups the demonstrations; a second selector groups ablations and critic dynamics. Without JavaScript, direct links to all clips and all analysis panels remain available.
 - Social metadata uses `images/social-preview.jpg` and the canonical project URL.
+- The Motivation section compares reward recipes in an HTML table (check and cross icons carry hidden Yes/No text for screen readers). The Method section shows `images/potential_field.png` ("Success Attracts, Failure Repels"), a schematic potential field in the layout of the paper figure, drawn in the site palette.
 
 ## Math typesetting
 
