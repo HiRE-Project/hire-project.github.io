@@ -316,3 +316,5 @@ code.task-name {
   .mark.solid { width: 22px; height: 22px; padding: 4px; }
   .recipe-question { font-size: 16px; }
 }
+.paper-figure .figure-title { margin: 4px 0 14px; color: var(--ink); font-size: 17px; font-weight: 650; line-height: 1.35; text-align: center; letter-spacing: -.01em; }
+@media (max-width: 480px) { .paper-figure .figure-title { font-size: 14px; margin-bottom: 10px; } }
